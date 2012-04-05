@@ -2,3 +2,7 @@ RapidoMSG = Yet another IpMsg based QtWebKit.
 
 2012-04-05 Initialized.
 
+
+  \
+  |-- doc    documents
+  |-- src    source projects.
