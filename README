@@ -1,8 +1,34 @@
-RapidoMSG = Yet another IpMsg based QtWebKit.
 
-2012-04-05 Initialized.
+RapidoMSG
+  Yet another IpMsg based on Qt and use QtWebKit for UI.
+
+============================================================
+1. How to use git and github?
+  step 1. Download and install Git.
+    Visit http://code.google.com/p/msysgit/downloads/list and download the lastest version.
+	e.g.: I'm working on Windows 7, so I download Git-1.7.9-preview20120201.exe
+  step 2. Download and install TortoiseGit.
+    Visit http://code.google.com/p/tortoisegit/downloads/list and download the lastest version.
+	e.g.: I'm using 32bit Windows 7, so I download TortoiseGit-1.7.8.0-32bit.exe
 
 
-  \
-  |-- doc    documents
-  |-- src    source projects.
+2. Work on the source code...
+  Once you fork this source code, you can use QtCreator to open the project file at src/rapido/rapido.pro, but because some files like Makefile and *.pro.user not under into the git version control, a messagebox will shown up and you can select your own configuration. For my working env., I select "Create Debug/Release configuration for one Qt SDK" and use VS2010 as the compiler and debuger.
+
+3. Why I cannot debug step by step with Visual Studio 2008/2010?
+  There are no default debuger, you must install one. You can download it from Microsoft website.
+  for all Windows Platform, goes here and select one:
+    http://msdn.microsoft.com/en-us/windows/hardware/gg463009
+  for Windows 7, goes here:
+    http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=8279
+  I download winsdk_web.exe from the second link and when installing, I select only debug tool.
+
+  After the debug tool installed, re-start QtCreator and open the "Options..." dialog box, select "Build and Run", and then the "Tools Chain..." tab, you will found it.
+
+
+=============================================================
+folder tree
+
+  \           project root.
+  |-- doc    documents.
+  \-- src    source projects.
