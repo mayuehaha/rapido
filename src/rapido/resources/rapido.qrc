@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/rapido.png</file>
+    </qresource>
+</RCC>
