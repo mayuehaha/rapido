@@ -1,4 +1,4 @@
-TRANSLATIONS = rapido_zh_CN.ts
+TRANSLATIONS = resources/i18n/rapido_zh_CN.ts
 
 QT += network webkit
 
