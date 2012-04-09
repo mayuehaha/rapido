@@ -21,7 +21,7 @@ RapidoMSG
     http://msdn.microsoft.com/en-us/windows/hardware/gg463009
   for Windows 7, goes here:
     http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=8279
-  I download winsdk_web.exe from the second link and when installing, I select only debug tool.
+  I download winsdk_web.exe from the second link and when installing, I select "debug tool" only.
 
   After the debug tool installed, re-start QtCreator and open the "Options..." dialog box, select "Build and Run", and then the "Tools Chain..." tab, you will found it.
 
@@ -31,4 +31,4 @@ folder tree
 
   \           project root.
   |-- doc    documents.
-  \-- src    source projects.
+  |-- src    source projects.
