@@ -1,6 +1,8 @@
 #ifndef IPMSGPROTOCOL_H
 #define IPMSGPROTOCOL_H
 
+#include "ipmsg_const.h"
+
 #include <QThread>
 #include <QUdpSocket>
 

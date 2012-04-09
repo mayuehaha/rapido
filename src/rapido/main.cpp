@@ -11,19 +11,19 @@ int main(int argc, char* argv[])
 
     MainWindow win;
 
-    // 国际化支持（注意.pro文件中的  TRANSLATIONS = rapido_zh_CN.ts）
-    // 然后用工具菜单中的 lupdate 生成和更新.ts文件，然后用 QT linguist 工具翻译
-    // 最后用工具菜单中的 lrelease 生成.qm文件，就是上面 QTranslator 要加载的那个。
+    // Internationalization support (look at .pro file:  TRANSLATIONS = rapido_zh_CN.ts)
+    // Use "lupdate" (locate at tools menu) to generate and update .ts file, then use "QT linguist" to translate.
+    // Finally use "lrelease" to generate .qm file, which will be load by QTranslator (see above lines).
     win.setWindowTitle(QObject::tr("Rapido - MyIM"));
 
-    // 可执行程序的图标，需要关注 .pro 文件中的 RC_FILE = resources/rapido.rc 这一行。
+    // icon for this execute file (look at .pro file: RC_FILE = resources/rapido.rc)
 
-    // 可以在运行时修改窗口的图标（这种方式是将.png图片编译到可执行程序中了）
+    // we can modify the window icon in run-time (for this example, we compile a .png file into execute file):
     //win.setWindowIcon(QIcon(":images/rapido.png"));
-    // 还可以动态加载外部图片资源作为图标（一般是透明的.png格式，注意尺寸要合适）：
+    // and load graphic file dynamiclly as the icon (usually transprant .png file):
     //win.setWindowIcon(QIcon("resources/images/rapido.png"));
 
-    // 这里我学习了如何设置窗口的初始大小、最大和最小尺寸的限定
+    // Set initialize size and min/max size of window.
     win.setFixedSize(300, 500);
     win.setMinimumSize(300, 500);
     win.setMaximumSize(600, 800);

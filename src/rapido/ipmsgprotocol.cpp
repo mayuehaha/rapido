@@ -1,7 +1,5 @@
 #include "ipmsgprotocol.h"
 
-//#include <QtGui>
-//#include <QtNetwork>
 #include <QNetworkInterface>
 #include <QHostInfo>
 #include <QUdpSocket>
@@ -27,7 +25,7 @@ void IpMsgProtocol::run()
     QString strIp;
     QHostAddress hostIp;
 
-    QList<QHostAddress> NetList = QNetworkInterface::allAddresses(); //取得全部信息
+    QList<QHostAddress> NetList = QNetworkInterface::allAddresses();
 
     for(int Neti = 0; Neti < NetList.count(); Neti++)
     {
@@ -53,18 +51,19 @@ void IpMsgProtocol::run()
     m_pSocket = new QUdpSocket();
     connect(m_pSocket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
 
-    if(!m_pSocket->bind(hostIp, 2425, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+    if(!m_pSocket->bind(hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
     {
         qDebug() << "Cannot bind.";
         delete m_pSocket;
         return;
     }
 
-    exec();
     //QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:A-PC:1:ApexLiu";
     QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
     //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-    m_pSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, 2425);
+    m_pSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
+
+    exec();
 
 /*
     while (m_pSocket->hasPendingDatagrams())
@@ -83,7 +82,7 @@ void IpMsgProtocol::run()
         qDebug() << "content: " << b;
     }
 */
-    int a = 0;
+    //int a = 0;
 }
 
 void IpMsgProtocol::readPendingDatagrams()
@@ -100,7 +99,7 @@ void IpMsgProtocol::readPendingDatagrams()
         //processTheDatagram(datagram);
         //qDebug() << "<<< " << sender.toString() << ":" << senderPort;
         QString a = sender.toString();
-        if(a == "192.168.1.2")
+        if(a == "192.168.1.104")
             continue;
 
         QString b(datagram);

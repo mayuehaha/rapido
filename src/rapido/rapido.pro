@@ -6,7 +6,8 @@ win32:CONFIG += console
 
 HEADERS += \
     mainwindow.h \
-    ipmsgprotocol.h
+    ipmsgprotocol.h \
+    ipmsg_const.h
 
 SOURCES += \
     mainwindow.cpp \
