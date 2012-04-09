@@ -62,12 +62,12 @@ void IpMsgProtocol::start()
         //delete m_pSocket;
         return;
     }
-/*
+
     //QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:A-PC:1:ApexLiu";
-    QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
+	QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
     //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
     m_socket.writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
-*/
+
     //exec();
 
 /*
@@ -108,16 +108,36 @@ void IpMsgProtocol::readPendingDatagrams()
         if(a == "192.168.1.104")
             continue;
 
-        QString b(datagram);
+		QString data(datagram);
         qDebug() << "sender: " << a << ":" << senderPort;
-        qDebug() << "content: " << b;
+		qDebug() << "content: " << data;
 
-        QStringList c = b.split(":");
-        for(int ci = 0; ci < c.count(); ci++)
-        {
-            kQString d = c.at(ci);
-            qDebug() << c.at(ci);
-        }
+		QStringList cmdList = data.split(":");
+//        for(int ci = 0; ci < c.count(); ci++)
+//        {
+//			QString d = c.at(ci);
+//            qDebug() << c.at(ci);
+//        }
+		// sanity check
+		if (cmdList.count() < R_IPMSG_NORMAL_FIELD_COUNT)
+		{
+			continue;
+		}
 
+		qint32 flags = cmdList.at(R_IPMSG_FLAGS_POS).toUInt();
+		qint32 cmd = IPMSG_GET_MODE(flags);
+		switch(cmd)
+		{
+		case IPMSG_SENDMSG:
+		{
+			//QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
+			QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:APEXPC:33:";
+			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
+			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), sender, senderPort);
+		}
+			break;
+		default:
+			qDebug() << QString("Unknown command: %1").arg(cmd);
+		}
     }
 }

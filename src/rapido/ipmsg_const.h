@@ -1,16 +1,32 @@
 #ifndef IPMSG_CONST_H
 #define IPMSG_CONST_H
 
-/*  IP Messenger Communication Protocol version 1.2 define  */
-/*	@(#)Copyright (C) H.Shirouzu 1996-2004   ipmsg.h	Ver2.05 */
-/* ========================================================================
+/*
+Some define.
+*/
+
+// flag position from received data
+#define R_IPMSG_FLAGS_POS               4
+#define R_IPMSG_NORMAL_FIELD_COUNT      6
+
+
+
+
+
+
+
+/*
+	IP Messenger Communication Protocol version 1.2 define
+	@(#)Copyright (C) H.Shirouzu 1996-2004   ipmsg.h	Ver2.05
+   ========================================================================
     Project  Name			: IP Messenger for Win32
     Module Name				: Main Header
     Create					: 1996-06-01(Sat)
     Update					: 2004-01-01(Thu)
     Copyright				: H.Shirouzu
     Reference				:
-    ======================================================================== */
+	========================================================================
+*/
 
 /*  macro  */
 #define IPMSG_GET_MODE(command)     (command & 0x000000ffUL)
@@ -53,6 +69,13 @@
 
 #define IPMSG_GETPUBKEY			0x00000072UL
 #define IPMSG_ANSPUBKEY			0x00000073UL
+
+/*
+FeiQ extension:
+*/
+#define IPMSG_FEIQ_REMOTE_START_TYPING		0x00000079UL	// remote user start input something.
+#define IPMSG_FEIQ_REMOTE_KEEP_TYPING		0x00000080UL	// remote user keep typing.
+
 
 /*  option for all command  */
 #define IPMSG_ABSENCEOPT		0x00000100UL
@@ -131,9 +154,9 @@
 #define IPMSG_FILE_ALIASFNAME	0x00000040UL	// alias fname
 #define IPMSG_FILE_UNICODEFNAME	0x00000041UL	// UNICODE fname
 
-#define FILELIST_SEPARATOR	'\a'
-#define HOSTLIST_SEPARATOR	'\a'
-#define HOSTLIST_DUMMY		"\b"
+#define IPMSG_FILELIST_SEPARATOR	'\a'
+#define IPMSG_HOSTLIST_SEPARATOR	'\a'
+#define IPMSG_HOSTLIST_DUMMY		"\b"
 
 
 #endif // IPMSG_CONST_H

@@ -5,6 +5,10 @@
 
 class IpMsgProtocol;
 
+/*
+IpMsgThread:
+*/
+
 class IpMsgThread : public QThread
 {
     Q_OBJECT
