@@ -21,14 +21,14 @@ bool IpMsgDB::Connect(void)
 		return false;
 	}
 
-	QSqlQuery q;
-	if(q.exec("CREATE TABLE `history` (`id` INT PRIMARY KEY, `name` VARCHAR)") == false)
+	QSqlQuery q(m_db);
+	if(q.exec("CREATE TABLE `history` (`id` INT PRIMARY KEY, `message` VARCHAR)") == false)
 	{
 		qDebug() << "Cannot create table.";
 	}
 
-	q.exec("INSERT INTO `history` VALUES (1, 'I\'m Rapido')");
-	q.exec("INSERT INTO `history` VALUES (2, 'Hello IpMsg and FeiQ!')");
+	q.exec("INSERT INTO `history` VALUES (1, \"I'm Rapido\")");
+	q.exec("INSERT INTO `history` VALUES (2, \"Hello IpMsg and FeiQ!\")");
 
 	m_db.close();
 	return true;
