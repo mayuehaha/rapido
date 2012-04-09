@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QWebView.h>
 
-#include "ipmsgprotocol.h"
+//#include "ipmsg_protocol.h"
 
 class MainWindow : public QWebView
 {
@@ -13,7 +13,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 
 protected:
-    IpMsgProtocol* m_pIpMsgThread;
+    //IpMsgProtocol* m_pIpMsgThread;
 
 signals:
     

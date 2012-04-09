@@ -6,13 +6,17 @@ win32:CONFIG += console
 
 HEADERS += \
     mainwindow.h \
-    ipmsgprotocol.h \
-    ipmsg_const.h
+    ipmsg_const.h \
+    global.h \
+    ipmsg_thread.h \
+    ipmsg_protocol.h
 
 SOURCES += \
     mainwindow.cpp \
     main.cpp \
-    ipmsgprotocol.cpp
+    global.cpp \
+    ipmsg_thread.cpp \
+    ipmsg_protocol.cpp
 
 RESOURCES += \
     resources/rapido.qrc

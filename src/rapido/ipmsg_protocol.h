@@ -3,20 +3,19 @@
 
 #include "ipmsg_const.h"
 
-#include <QThread>
+#include <QObject>
 #include <QUdpSocket>
 
-class IpMsgProtocol : public QThread
+class IpMsgProtocol : public QObject
 {
     Q_OBJECT
 public:
-    explicit IpMsgProtocol();
+    explicit IpMsgProtocol(QObject *parent = 0);
     
-protected:
-    void run();
+    void start();
 
 protected:
-    QUdpSocket* m_pSocket;
+    QUdpSocket m_socket;
 
 signals:
     

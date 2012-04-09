@@ -1,5 +1,8 @@
 #include <QtGui>
+#include "global.h"
 #include "mainwindow.h"
+
+#include "global.h"
 
 int main(int argc, char* argv[])
 {
@@ -29,7 +32,15 @@ int main(int argc, char* argv[])
     win.setMaximumSize(600, 800);
 
     win.show();
-    return app.exec();
+
+    // Start the IpMsg handler thread.
+    rapido_get_ipmsg_thread().start();
+
+    int iRet = app.exec();
+
+    rapido_finalize();
+
+    return iRet;
 }
 
 

@@ -1,4 +1,4 @@
-#include "ipmsgprotocol.h"
+#include "ipmsg_protocol.h"
 
 #include <QNetworkInterface>
 #include <QHostInfo>
@@ -6,11 +6,16 @@
 #include <QStringList>
 #include <QDebug>
 
-IpMsgProtocol::IpMsgProtocol()
+IpMsgProtocol::IpMsgProtocol(QObject *parent)
+    :QObject(parent)
 {
+
+    //connect(&m_socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
+    connect(&m_socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+
 }
 
-void IpMsgProtocol::run()
+void IpMsgProtocol::start()
 {
     //QMessageBox::information(NULL, "Title", "Content", QMessageBox, QMessageBox::Yes);
     //qDebug() << "Hello";
@@ -48,22 +53,22 @@ void IpMsgProtocol::run()
     qDebug() << "My Host Name: " << hostName;
 
     // Now we send some message to show me online.
-    m_pSocket = new QUdpSocket();
-    connect(m_pSocket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
+    //m_pSocket = new QUdpSocket();
+    //connect(m_pSocket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
 
-    if(!m_pSocket->bind(hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+    if(!m_socket.bind(hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
     {
         qDebug() << "Cannot bind.";
-        delete m_pSocket;
+        //delete m_pSocket;
         return;
     }
-
+/*
     //QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:A-PC:1:ApexLiu";
     QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
     //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-    m_pSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
-
-    exec();
+    m_socket.writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
+*/
+    //exec();
 
 /*
     while (m_pSocket->hasPendingDatagrams())
@@ -87,14 +92,15 @@ void IpMsgProtocol::run()
 
 void IpMsgProtocol::readPendingDatagrams()
 {
-    while (m_pSocket->hasPendingDatagrams())
+    while (m_socket.hasPendingDatagrams())
     {
         QByteArray datagram;
-        datagram.resize(m_pSocket->pendingDatagramSize());
+        datagram.resize(m_socket.pendingDatagramSize());
         QHostAddress sender;
         quint16 senderPort;
 
-        m_pSocket->readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);
+        if(-1 == m_socket.readDatagram(datagram.data(), datagram.size(), &sender, &senderPort))
+            continue;
 
         //processTheDatagram(datagram);
         //qDebug() << "<<< " << sender.toString() << ":" << senderPort;
@@ -109,7 +115,7 @@ void IpMsgProtocol::readPendingDatagrams()
         QStringList c = b.split(":");
         for(int ci = 0; ci < c.count(); ci++)
         {
-            QString d = c.at(ci);
+            kQString d = c.at(ci);
             qDebug() << c.at(ci);
         }
 

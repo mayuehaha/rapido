@@ -15,6 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setUrl(startURL);
 
     // Start the IpMsg-Protocol thread for register myself and receive messages.
-    m_pIpMsgThread = new IpMsgProtocol;
-    m_pIpMsgThread->start();
+    //m_pIpMsgThread = new IpMsgProtocol;
+    //m_pIpMsgThread->start();
 }
