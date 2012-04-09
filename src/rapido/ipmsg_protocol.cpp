@@ -17,6 +17,10 @@ IpMsgProtocol::IpMsgProtocol(QObject *parent)
 
 void IpMsgProtocol::start()
 {
+	if(!m_db.Connect())
+	{
+		return;
+	}
     //QMessageBox::information(NULL, "Title", "Content", QMessageBox, QMessageBox::Yes);
     //qDebug() << "Hello";
 

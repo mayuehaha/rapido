@@ -2,6 +2,7 @@
 #define IPMSGPROTOCOL_H
 
 #include "ipmsg_const.h"
+#include "ipmsg_db.h"
 
 #include <QObject>
 #include <QUdpSocket>
@@ -16,6 +17,7 @@ public:
 
 protected:
     QUdpSocket m_socket;
+	IpMsgDB m_db;
 
 signals:
     
