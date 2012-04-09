@@ -1,5 +1,18 @@
 #include "ipmsg_db.h"
 
+/*
+rapido.db table structs:
+
+message:
+id/ip/mac/user_name/group_name/host_name/login_name
+datetime/message
+
+attach-files:
+id/message_id/file_name/file_mime_type
+
+
+*/
+
 IpMsgDB::IpMsgDB(QObject *parent)
 	:QObject(parent)
 {
