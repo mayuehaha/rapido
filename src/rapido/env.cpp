@@ -81,14 +81,17 @@ bool Env::_getNetworkInfo(void)
 	m_strHostName = QHostInfo::localHostName();
 	if(m_strHostName.isEmpty())
 		m_strHostName = _getEnvironmentVariable(QRegExp("COMPUTERNAME.*"));
+
 #elif defined(Q_OS_LINUX)
 	m_strHostName = _getEnvironmentVariable(QRegExp("HOSTNAME.*"));
 
 	// if no HOSTNAME environment variable is set, read it from /etc/hostname,
 	// for distribution like ubuntu.
-	if (m_strHostName.isEmpty()) {
+	if (m_strHostName.isEmpty())
+	{
 		QFile file("/etc/hostname");
-		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+		{
 			m_strHostName.append(file.readLine());
 			m_strHostName.remove(QChar('\n'));
 		}
@@ -97,6 +100,8 @@ bool Env::_getNetworkInfo(void)
 #elif defined(Q_OS_MAC)
 	// QHostInfo::localHostName() will add ".local" after the host name, so use env. varb.
 	m_strHostName = _getEnvironmentVariable(QRegExp("HOSTNAME.*"));
+	if(m_strHostName.isEmpty())
+		m_strHostName = QHostInfo::localHostName();
 #endif
 
 	if (m_strHostName.isEmpty())
