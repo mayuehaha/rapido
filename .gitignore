@@ -1,2 +1,9 @@
 
 src/rapido/Makefile
+src/rapido/debug
+src/rapido/release
+*.Debug
+*.Release
+*.pdb
+*.pro.user
+*.db

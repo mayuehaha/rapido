@@ -24,3 +24,5 @@ RESOURCES += \
     resources/rapido.qrc
 
 RC_FILE = resources/rapido.rc
+
+#DEFINES += QT_NO_DEBUG_OUTPUT

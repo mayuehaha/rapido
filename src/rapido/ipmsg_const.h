@@ -73,8 +73,11 @@ Some define.
 /*
 FeiQ extension:
 */
+
+//#define IPMSG_FEIQ_REMOTE_????          	0x00000077UL	//
 #define IPMSG_FEIQ_REMOTE_START_TYPING		0x00000079UL	// remote user start input something.
 #define IPMSG_FEIQ_REMOTE_KEEP_TYPING		0x00000080UL	// remote user keep typing.
+//#define IPMSG_FEIQ_REMOTE_????    		0x000000C9UL	//
 
 
 /*  option for all command  */

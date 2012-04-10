@@ -18,6 +18,7 @@ public:
 protected:
     QUdpSocket m_socket;
 	IpMsgDB m_db;
+    qint32 m_packetNo;
 
 signals:
     
