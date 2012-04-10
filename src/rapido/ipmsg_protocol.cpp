@@ -19,7 +19,8 @@ void IpMsgProtocol::start()
 {
 	if(!m_db.Connect())
 	{
-		return;
+		qDebug() << "Cannot load db.";
+		//return;
 	}
     //QMessageBox::information(NULL, "Title", "Content", QMessageBox, QMessageBox::Yes);
     //qDebug() << "Hello";
@@ -34,23 +35,35 @@ void IpMsgProtocol::start()
     QString strIp;
     QHostAddress hostIp;
 
-    QList<QHostAddress> NetList = QNetworkInterface::allAddresses();
+	//QHostInfo hostInfo;
+	QString hostName = QHostInfo::localHostName();//hostInfo.localHostName ();
+	QHostInfo hostinfo = QHostInfo::fromName(hostName);;
+
+	QList<QHostAddress> NetList = hostinfo.addresses();//QNetworkInterface::allAddresses();
 
     for(int Neti = 0; Neti < NetList.count(); Neti++)
     {
         strIp = NetList.at(Neti).toString();
-        if(strIp != "127.0.0.1")
-        {
-            hostIp = NetList.at(Neti);
-            break;
-        }
+
+		// skip IPV6
+		if(-1 != strIp.indexOf("::"))
+			continue;
+		qDebug() << strIp;
+
+		if(strIp.startsWith("127."))
+			continue;// != "127.0.0.1")
+		{
+		hostIp = NetList.at(Neti);
+		break;
+		}
     }
 
     if(hostIp.isNull())
-        return;
+	{
+		qDebug() << "hostIp is Null.";
+		return;
+	}
 
-    QHostInfo hostInfo;
-    QString hostName = hostInfo.localHostName ();
 
     qDebug() << "My IP: " << hostIp.toString();
 
@@ -96,7 +109,10 @@ void IpMsgProtocol::start()
 
 void IpMsgProtocol::readPendingDatagrams()
 {
-    while (m_socket.hasPendingDatagrams())
+	static qint32 packet_no = 3;
+	packet_no++;
+
+	while (m_socket.hasPendingDatagrams())
     {
         QByteArray datagram;
         datagram.resize(m_socket.pendingDatagramSize());
@@ -109,7 +125,7 @@ void IpMsgProtocol::readPendingDatagrams()
         //processTheDatagram(datagram);
         //qDebug() << "<<< " << sender.toString() << ":" << senderPort;
         QString a = sender.toString();
-        if(a == "192.168.1.104")
+		if(a == "192.168.1.105")
             continue;
 
 		QString data(datagram);
@@ -135,13 +151,19 @@ void IpMsgProtocol::readPendingDatagrams()
 		case IPMSG_SENDMSG:
 		{
 			//QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
-			QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:APEXPC:33:";
+			QByteArray datagramSend = "1:" + QByteArray::number(packet_no) + ":apex:APEXPC:33:";
 			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
 			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), sender, senderPort);
 		}
 			break;
 		default:
-			qDebug() << QString("Unknown command: %1").arg(cmd);
+		{
+			//QString strCmd(QByteArray::number(cmd).toHex().data());
+			//qDebug() << QString("Unknown command: 0x%1").arg(strCmd);
+			//qDebug() << "Unknown command: 0x" << QByteArray::number(cmd).toHex();
+			qDebug("Unknown command: 0x%02X", cmd);
+			break;
+		}
 		}
     }
 }
