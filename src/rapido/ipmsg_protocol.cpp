@@ -208,6 +208,9 @@ void IpMsgProtocol::readPendingDatagrams()
 		case IPMSG_FEIQ_REMOTE_START_TYPING:	// FeiQ special.
 			qDebug() << strSenderIp << "is typing to you...";
 			break;
+		case IPMSG_FEIQ_REMOTE_KEEP_TYPING:
+			qDebug() << strSenderIp << "is still typing to you...";
+			break;
 		default:
 		{
 			//QString strCmd(QByteArray::number(cmd).toHex().data());
