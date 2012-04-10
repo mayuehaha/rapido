@@ -38,14 +38,15 @@ void IpMsgProtocol::start()
 	QString hostName = QHostInfo::localHostName();//hostInfo.localHostName ();
 	QHostInfo hostinfo = QHostInfo::fromName(hostName);;
 
-	QList<QHostAddress> NetList = hostinfo.addresses();//QNetworkInterface::allAddresses();
+	//QList<QHostAddress> NetList = hostinfo.addresses();//QNetworkInterface::allAddresses();
+	QList<QHostAddress> NetList = QNetworkInterface::allAddresses();
 
     for(int Neti = 0; Neti < NetList.count(); Neti++)
     {
         strIp = NetList.at(Neti).toString();
 
 		// skip IPV6
-		if(-1 != strIp.indexOf("::"))
+		if(-1 != strIp.indexOf(":"))
 			continue;
 		qDebug() << strIp;
 
@@ -71,8 +72,9 @@ void IpMsgProtocol::start()
     //m_pSocket = new QUdpSocket();
     //connect(m_pSocket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
 
-    if(!m_socket.bind(hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
-    {
+	//if(!m_socket.bind(hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+	if(!m_socket.bind(QHostAddress::Any, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+	{
         qDebug() << "Cannot bind.";
         //delete m_pSocket;
         return;
@@ -123,7 +125,8 @@ void IpMsgProtocol::readPendingDatagrams()
         //processTheDatagram(datagram);
         //qDebug() << "<<< " << sender.toString() << ":" << senderPort;
 		QString strSenderIp = sender.toString();
-		if(strSenderIp == "192.168.1.104")
+		// TODO: do not use hard code...
+		if(strSenderIp == "192.168.1.105")
             continue;
 
 		QString data(datagram);
@@ -177,8 +180,8 @@ void IpMsgProtocol::readPendingDatagrams()
 			qDebug() << "Ok, somebody says online already." << strSenderIp;
 
 			QString userName = cmdList.at(5);
-			//QTextCodec *codec = QTextCodec::codecForName("GBK");
-			QTextCodec *codec = QTextCodec::codecForLocale();
+			QTextCodec *codec = QTextCodec::codecForName("GBK");
+			//QTextCodec *codec = QTextCodec::codecForLocale();
 			QByteArray tmp(cmdList.at(5).toAscii());//.toLocal8Bit());
 			userName = codec->toUnicode(tmp);
 			qDebug() << "==> " << codec->toUnicode(tmp);
