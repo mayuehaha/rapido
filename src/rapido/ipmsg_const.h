@@ -5,6 +5,8 @@
 Some define.
 */
 
+#define R_IPMSG_COMMAND_SEPERATOR		':'
+
 // flag position from received data
 #define R_IPMSG_FLAGS_POS               4
 #define R_IPMSG_NORMAL_FIELD_COUNT      6

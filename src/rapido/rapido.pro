@@ -10,7 +10,8 @@ HEADERS += \
     global.h \
     ipmsg_thread.h \
     ipmsg_protocol.h \
-    ipmsg_db.h
+    ipmsg_db.h \
+    env.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -18,7 +19,8 @@ SOURCES += \
     global.cpp \
     ipmsg_thread.cpp \
     ipmsg_protocol.cpp \
-    ipmsg_db.cpp
+    ipmsg_db.cpp \
+    env.cpp
 
 RESOURCES += \
     resources/rapido.qrc

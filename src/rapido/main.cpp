@@ -8,6 +8,12 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
+	if(!rapido_intialize())
+	{
+		qDebug() << "Rapido initialize failed.";
+		return 1;
+	}
+
     QTranslator qtTranslator;
     qtTranslator.load("rapido_zh_CN.qm");
     app.installTranslator(&qtTranslator);
@@ -34,7 +40,7 @@ int main(int argc, char* argv[])
     win.show();
 
     // Start the IpMsg handler thread.
-    rapido_get_ipmsg_thread().start();
+	rapido_ipmsg_thread().start();
 
     int iRet = app.exec();
 

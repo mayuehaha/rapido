@@ -6,12 +6,25 @@
 #include <QStringList>
 #include <QDebug>
 
+#include "global.h"
+
+/*
+command:
+  1:123:apex:APEXPC:1:ApexLiu
+format:
+  unknown : packet-number : login-name : computer-name (or host-name) : command : user-name
+*/
+
 IpMsgProtocol::IpMsgProtocol(QObject *parent)
     :QObject(parent)
 {
-	m_packetNo = 1;
-    //connect(&m_socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
-    connect(&m_socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+	qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
+	// Set init package number as random.
+	m_packetNo = qrand() % 1024;
+
+	// !! DO NOT use Qt::BlockingQueuedConnection, otherwise you'll got an exception.
+	//connect(&m_socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
+	connect(&m_socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
 }
 
 void IpMsgProtocol::start()
@@ -21,90 +34,21 @@ void IpMsgProtocol::start()
 		qDebug() << "Cannot load db.";
 		//return;
 	}
-    //QMessageBox::information(NULL, "Title", "Content", QMessageBox, QMessageBox::Yes);
-    //qDebug() << "Hello";
 
-    //hostName = socket.gethostname()
-    //ip = socket.gethostbyname(hostName)
-    //QString hostName = QNetworkInterface::name();
-
-    //QMessageBox::information(NULL, "Title", hostName, QMessageBox, QMessageBox::Yes);
-    //qDebug() << hostName;
-
-    QString strIp;
-    QHostAddress hostIp;
-
-	//QHostInfo hostInfo;
-	QString hostName = QHostInfo::localHostName();//hostInfo.localHostName ();
-	QHostInfo hostinfo = QHostInfo::fromName(hostName);;
-
-	//QList<QHostAddress> NetList = hostinfo.addresses();//QNetworkInterface::allAddresses();
-	QList<QHostAddress> NetList = QNetworkInterface::allAddresses();
-
-    for(int Neti = 0; Neti < NetList.count(); Neti++)
-    {
-        strIp = NetList.at(Neti).toString();
-
-		// skip IPV6
-		if(-1 != strIp.indexOf(":"))
-			continue;
-		qDebug() << strIp;
-
-		if(strIp.startsWith("127."))
-            continue;
-
-        hostIp = NetList.at(Neti);
-		break;
-    }
-
-    if(hostIp.isNull())
-	{
-		qDebug() << "hostIp is Null.";
-		return;
-	}
-
-
-    qDebug() << "My IP: " << hostIp.toString();
-
-    qDebug() << "My Host Name: " << hostName;
-
-    // Now we send some message to show me online.
-    //m_pSocket = new QUdpSocket();
-    //connect(m_pSocket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
-
-	//if(!m_socket.bind(hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
-	if(!m_socket.bind(QHostAddress::Any, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+	//if(!m_socket.bind(QHostAddress::Any, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+	if(!m_socket.bind(rapido_env().m_hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
 	{
         qDebug() << "Cannot bind.";
-        //delete m_pSocket;
         return;
     }
 
+	// broadcast that I'm online. :)
     //QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:A-PC:1:ApexLiu";
-	QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
+	//QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
+	QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ rapido_env().m_strHostName.toAscii() +":1:" + rapido_env().m_strLoginName.toAscii();
     //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
+	qDebug() << "send:" << QString(datagram);
     m_socket.writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
-
-    //exec();
-
-/*
-    while (m_pSocket->hasPendingDatagrams())
-    {
-        QByteArray datagram;
-        datagram.resize(m_pSocket->pendingDatagramSize());
-        QHostAddress sender;
-        quint16 senderPort;
-
-        m_pSocket->readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);
-
-        //processTheDatagram(datagram);
-        QString a = sender.toString();
-        QString b(datagram);
-        qDebug() << "sender: " << a << ":" << senderPort;
-        qDebug() << "content: " << b;
-    }
-*/
-    //int a = 0;
 }
 
 void IpMsgProtocol::readPendingDatagrams()
@@ -116,32 +60,28 @@ void IpMsgProtocol::readPendingDatagrams()
     {
         QByteArray datagram;
         datagram.resize(m_socket.pendingDatagramSize());
-        QHostAddress sender;
+		QHostAddress senderIp;
         quint16 senderPort;
 
-        if(-1 == m_socket.readDatagram(datagram.data(), datagram.size(), &sender, &senderPort))
+		if(-1 == m_socket.readDatagram(datagram.data(), datagram.size(), &senderIp, &senderPort))
             continue;
 
-        //processTheDatagram(datagram);
-        //qDebug() << "<<< " << sender.toString() << ":" << senderPort;
-		QString strSenderIp = sender.toString();
-		// TODO: do not use hard code...
-		if(strSenderIp == "192.168.1.105")
-            continue;
+		QString strSenderIp = senderIp.toString();
+
+		// skip broadcast to myself.
+		if(senderIp == rapido_env().m_hostIp)
+			continue;
 
 		QString data(datagram);
-		//qDebug() << "sender: " << a << ":" << senderPort;
+		//qDebug() << "sender: " << senderIp << ":" << senderPort;
 		//qDebug() << "content: " << data;
 
-		QStringList cmdList = data.split(":");
-//        for(int ci = 0; ci < c.count(); ci++)
-//        {
-//			QString d = c.at(ci);
-//            qDebug() << c.at(ci);
-//        }
-		// sanity check
+		QStringList cmdList = data.split(R_IPMSG_COMMAND_SEPERATOR);
+
+		// check
 		if (cmdList.count() < R_IPMSG_NORMAL_FIELD_COUNT)
 		{
+			qDebug() << "Invalid IpMsg message format.";
 			continue;
 		}
 
@@ -159,9 +99,9 @@ void IpMsgProtocol::readPendingDatagrams()
 			// told he/she/it I'm already online. :)
 
 			//QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
-			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:APEXPC:"+QByteArray::number(qint32(IPMSG_ANSENTRY))+":";
+			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":" + QByteArray::number(qint32(IPMSG_ANSENTRY)) + ":";
 			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), sender, senderPort);
+			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
 			break;
 		}
 
@@ -192,9 +132,9 @@ void IpMsgProtocol::readPendingDatagrams()
 		{
 			qDebug() << "content: " << data;
 			//QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
-			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:APEXPC:"+QByteArray::number(qint32(IPMSG_RECVMSG))+":";
+			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":"+QByteArray::number(qint32(IPMSG_RECVMSG))+":";
 			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), sender, senderPort);
+			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
 			break;
 		}
 		case IPMSG_RECVMSG:
@@ -203,9 +143,9 @@ void IpMsgProtocol::readPendingDatagrams()
 		case IPMSG_READMSG:
 		{
 			//QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
-			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:APEXPC:"+QByteArray::number(qint32(IPMSG_ANSREADMSG))+":";
+			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":"+QByteArray::number(qint32(IPMSG_ANSREADMSG))+":";
 			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), sender, senderPort);
+			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
 			break;
 		}
 		case IPMSG_FEIQ_REMOTE_START_TYPING:	// FeiQ special.
@@ -216,9 +156,6 @@ void IpMsgProtocol::readPendingDatagrams()
 			break;
 		default:
 		{
-			//QString strCmd(QByteArray::number(cmd).toHex().data());
-			//qDebug() << QString("Unknown command: 0x%1").arg(strCmd);
-			//qDebug() << "Unknown command: 0x" << QByteArray::number(cmd).toHex();
 			qDebug() << "sender: " << strSenderIp << ":" << senderPort;
 			qDebug() << "content: " << data;
 			QTextCodec *codec = QTextCodec::codecForName("GBK");

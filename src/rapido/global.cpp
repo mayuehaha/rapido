@@ -1,9 +1,31 @@
 #include "global.h"
 #include "ipmsg_thread.h"
 
-//IpMsgThread* g_ipmsg_thread = NULL;
+bool rapido_intialize(void)
+{
+	if(!rapido_env().Initialize())
+		return false;
+	return true;
+}
 
-IpMsgThread& rapido_get_ipmsg_thread(void)
+void rapido_finalize(void)
+{
+//    if(NULL != g_ipmsg_thread)
+//    {
+//        delete g_ipmsg_thread;
+//        g_ipmsg_thread = NULL;
+//    }
+
+	rapido_ipmsg_thread().stop_and_finalize();
+}
+
+Env& rapido_env(void)
+{
+	static Env env;
+	return env;
+}
+
+IpMsgThread& rapido_ipmsg_thread(void)
 {
 //    if(NULL == g_ipmsg_thread)
 //    {
@@ -15,15 +37,3 @@ IpMsgThread& rapido_get_ipmsg_thread(void)
 }
 
 
-
-void rapido_finalize(void)
-{
-//    if(NULL != g_ipmsg_thread)
-//    {
-//        delete g_ipmsg_thread;
-//        g_ipmsg_thread = NULL;
-//    }
-
-    rapido_get_ipmsg_thread().stop_and_finalize();
-
-}

@@ -1,0 +1,451 @@
+======================================================================
+IP Messenger 通讯协议
+  原始协议以日文写就，Mr.Kanazawa将其译为英文，中文译文来自网络，部分为自己的理解。
+  注意：命令中凡是 IPMSG_BR_XXXX，即带有 _BR_ 的，均为广播消息，其他的则为点对点消息。
+======================================================================
+Original ipmsg protocol specification is written in Japanese.
+This document was translated by Mr.Kanazawa.
+This document is not verified yet.
+
+----------------------------------------------------------------------
+        IP Messenger communication protocol (Draft-9)    1996/02/21
+                                                Modified 2003/01/14
+
+                                                       H.Shirouzu
+                                               shirouzu@h.email.ne.jp
+----------------------------------------------------------------------
+
+About IP Messenger
+	This is a Send/Receive message service using the TCP/UDP Port.
+关于IPMSG：
+	IPMSG使用TCP/UDP协议提供收发消息及文件。
+
+Characteristics
+	IP Messenger can be installed in any OS if TCP/IP is used on your machine.
+	Dynamic member recognition can be done within your network or specified network.
+	You can exchange messages between all IPMsg members.
+特性：
+	IPMSG能够安装在任何一个安装了TCP/IP协议栈的操作系统上，使用在线用户的动态识别机制，可以和在线所有用户进行信息交换。
+
+Function description
+	Use TCP/UDP port(default:2425). See the following descriptions
+	(Message Send/Receive: UDP, File Send/Receive: TCP)
+运行机制介绍：
+	使用TCP/UDP端口(默认端口为2425)，参见后续的详细描述。
+	消息的收发使用UDP协议，文件的收发使用TCP协议。
+
+  1. Command
+  1. 命令
+     1) Command functions (Low 8 bits from command number 32 bits)
+     1) 基本命令(32位命令的低8位)
+
+	IPMSG_NOOPERATION     No Operation
+	IPMSG_NOOPERATION     不进行任何操作
+	IPMSG_BR_ENTRY        Entry to service (Start-up with a Broadcast command)
+	IPMSG_BR_ENTRY        用户上线（以广播方式登陆）
+	IPMSG_BR_EXIT         Exit from service (End with a Broadcast command)
+	IPMSG_BR_EXIT         用户下线（以广播方式退出）
+	IPMSG_ANSENTRY        Notify a new entry
+	IPMSG_ANSENTRY        应答用户上线
+	IPMSG_BR_ABSENCE      Change absence mode
+	IPMSG_BR_ABSENCE      改为缺席模式
+
+	IPMSG_BR_ISGETLIST    Search valid sending host members
+	IPMSG_BR_ISGETLIST    寻找有效的可以发送用户列表的成员
+	IPMSG_OKGETLIST       Host list sending notice
+	IPMSG_OKGETLIST       通知用户列表已经获得
+	IPMSG_GETLIST         Host list sending request
+	IPMSG_GETLIST         用户列表发送请求
+	IPMSG_ANSLIST         Host list sending
+	IPMSG_ANSLIST         应答用户列表发送请求
+
+	IPMSG_SENDMSG         Message transmission
+	IPMSG_SENDMSG         发送消息
+	IPMSG_RECVMSG         Message receiving check
+	IPMSG_RECVMSG         消息接受验证
+
+	IPMSG_READMSG         Message open notice
+	IPMSG_READMSG         消息打开通知
+	IPMSG_DELMSG          Message discarded notice
+	IPMSG_DELMSG          消息丢弃通知
+	IPMSG_ANSREADMSG     Message open confirmation notice(added from version-8)
+	IPMSG_ANSREADMSG     消息打开确认通知（version-8中添加）
+
+	IPMSG_GETFILEDATA     File Transfer request by TCP
+	IPMSG_GETFILEDATA     文件传输请求
+	IPMSG_RELEASEFILES    Discard attachment file
+	IPMSG_RELEASEFILES    丢弃附加文件
+	IPMSG_GETDIRFILES     Attachment hierarchical file request
+	IPMSG_GETDIRFILES     附着同级文件请求
+
+	IPMSG_GETINFO         Get IPMSG version info.
+	IPMSG_GETINFO         获得IPMSG版本信息
+	IPMSG_SENDINFO        Send IPMSG version info.
+	IPMSG_SENDINFO        发送IPMSG版本信息
+
+	IPMSG_GETABSENCEINFO     Get absence sentence
+	IPMSG_GETABSENCEINFO     获得缺席信息
+	IPMSG_SENDABSENCEINFO    Send absence sentence
+	IPMSG_SENDABSENCEINFO    发送缺席信息
+
+	IPMSG_GETPUBKEY          RSA Public Key Acquisition
+	IPMSG_GETPUBKEY          获得RSA公钥
+	IPMSG_ANSPUBKEY          RSA Public Key Response
+	IPMSG_ANSPUBKEY          应答RSA公钥
+
+     2) Option flag (High 24 bits from command number 32 bits)
+     2) 选项(32位命令的高24位)
+
+	IPMSG_ABSENCEOPT       Absence mode(Member recognition command)
+	IPMSG_ABSENCEOPT     　缺席模式(Member recognition command)
+	IPMSG_SERVEROPT        Server(Reserved)
+	IPMSG_SERVEROPT        服务器（保留）
+	IPMSG_DIALUPOPT        Send individual member recognition command
+	IPMSG_DIALUPOPT        发送给个人 Send individual member recognition command
+
+	IPMSG_SENDCHECKOPT     Transmission check
+	IPMSG_SENDCHECKOPT     传送验证
+	IPMSG_SECRETOPT        Sealed message
+	IPMSG_SECRETOPT        密封的消息
+	IPMSG_READCHECKOPT     Sealed message check(added from ver8)
+	IPMSG_READCHECKOPT     密封消息验证(ver8中添加 )
+	IPMSG_PASSWORDOPT      Lock
+	IPMSG_PASSWORDOPT    　密码
+	IPMSG_BROADCASTOPT     Broadcast message
+	IPMSG_BROADCASTOPT     广播消息
+	IPMSG_MULTICASTOPT     Multi-cast(Multiple casts selection)
+	IPMSG_MULTICASTOPT     多播
+	IPMSG_NEWMUTIOPT       New version multi-cast(reserved)
+	IPMSG_NEWMUTIOPT     　新版本的多播（保留）
+	IPMSG_AUTORETOPT       Automatic response(Ping-pong protection)
+	IPMSG_AUTORETOPT     　自动应答(Ping-pong protection)
+	IPMSG_NOLOGOPT         No log files
+	IPMSG_NOLOGOPT         没有日志文件
+	IPMSG_NOADDLISTOPT    Notice to the members outside of BR_ENTRY
+	IPMSG_NOADDLISTOPT    不添加用户列表Notice to the members outside of BR_ENTRY
+
+	IPMSG_FILEATTACHOPT    File attachment
+	IPMSG_FILEATTACHOPT    附加文件
+	IPMSG_ENCRYPTOPT       Code
+	IPMSG_ENCRYPTOPT     　加密
+
+	IPMSG_NOPOPUPOPT       (No longer valid)
+	IPMSG_NOPOPUPOPT     　（不再有效）
+	IPMSG_RETRYOPT         Re-send flag(Use when acquiring HOSTLIST)
+	IPMSG_RETRYOPT         重发标志（用于请求用户列表时）
+
+     3) Extended code flag (hex format combination)
+
+	IPMSG_RSA_512
+	IPMSG_RSA_1024
+	IPMSG_RSA_2048
+	IPMSG_RC2_40
+	IPMSG_RC2_128
+	IPMSG_RC2_256
+	IPMSG_BLOWFISH_128
+	IPMSG_BLOWFISH_256
+	IPMSG_SIGN_MD5
+
+     4) Extended files for attachment (fileattr low 8 bits)
+
+	IPMSG_FILE_REGULAR
+	IPMSG_FILE_DIR
+	IPMSG_FILE_RETPARENT
+	IPMSG_FILE_SYMLINK
+	IPMSG_FILE_CDEV
+	IPMSG_FILE_BDEV
+	IPMSG_FILE_FIFO
+	IPMSG_FILE_RESFORK
+
+     5) Attachment file extended attribute(fileattr high 24 bits)
+
+	IPMSG_FILE_RONLYOPT
+	IPMSG_FILE_HIDDENOPT
+	IPMSG_FILE_EXHIDDENOPT
+	IPMSG_FILE_ARCHIVEOPT
+	IPMSG_FILE_SYSTEMOPT
+
+     6) Extended file attribute for attachment file
+
+	IPMSG_FILE_UID
+	IPMSG_FILE_USERNAME
+	IPMSG_FILE_GID
+	IPMSG_FILE_GROUPNAME
+	IPMSG_FILE_PERM
+	IPMSG_FILE_MAJORNO
+	IPMSG_FILE_MINORNO
+	IPMSG_FILE_CTIME
+	IPMSG_FILE_MTIME
+	IPMSG_FILE_ATIME
+	IPMSG_FILE_CREATETIME
+
+	IPMSG_FILE_CREATOR
+	IPMSG_FILE_FILETYPE
+	IPMSG_FILE_FINDERINFO
+
+	IPMSG_FILE_ACL
+	IPMSG_FILE_ALIASFNAME
+	IPMSG_FILE_UNICODEFNAME
+
+
+  2.Command format(Use all character strings)
+  2.数据包格式(使用字符串)：
+
+     1) Command(Format version-1)
+	 1) 数据包格式(版本1的格式)
+
+	Ver(1) : PacketNo : SenderName : SenderHost : CommandNo : AdditionalSection
+	版本号(1) : 包编号 : 发送者姓名 : 发送者主机名 : 命令 : 附加信息
+
+     2) An example for Message Send/Receive by using the current command format
+     2) 使用当前命令格式收发信息的示例：
+
+	"1:100:shirouzu:jupiter:32:Hello"
+
+
+  3.Command process overview
+  3.命令处理总述：
+
+     1) Member recognition
+     1) 用户识别
+
+	An IPMSG_BR_ENTRY command notifies a new entry to the current
+	members at start-up.
+	当 IPMSG 启动时，命令 IPMSG_BR_ENTRY 被广播到网络中，向所有在线的用户提示一个新用户
+	的到达(即表示“我来了”)。
+
+	All members add the new member to their list after getting a notification message.
+	An IPMSG_ANSENTRY command sends a message back to the new member.
+	所有在线用户将把该新上线用户添加到自己的用户列表中，并向该新上线用户发送 IPMSG_ANSENTRY 命
+	令(即表示“我在线”)。
+
+	The new member gets the current member data by a
+	IPMSG_ANSENTRY command. All members can communicate as long as an
+	IP packet exists.
+	该新上线用户接收到 IPMSG_ANSENTRY 命令后即将在线用户添加到自己的用户列表中。只要有IP包
+	存在，所有用户都可以相互交流。
+
+	An IPMSG_BR_ABSENCE command broadcasts absence mode cancel or
+	nickname change to all members. However, an IPMSG_ANSENTRY command
+	does not send a message back, which is different from an IPMSG_BR_ENTRY
+	command.
+	当缺席模式或者昵称改变时，IPMSG_BR_ABSENCE 命令向所有用户广播。然而，IPMSG_ANSENTRY 命
+	令不同于 IPMSG_BR_ENTRY 命令，它不需要一个返回消息。
+
+	IPMSG_BR_ENTRY, IPMSG_ANSENTRY, and IPMSG_BR_ABSENCE commands
+	use an IPMSG_ABSENCEOPT flag for absence mode. Input a nickname to
+	additional command.
+	IPMSG_BR_ENTRY, IPMSG_ANSENTRY, 和 IPMSG_BR_ABSENCE 命令在缺席模式下需要使
+	用 IPMSG_ABSENCEOPT 标志，在附加命令里添加一个昵称。
+
+	Add an IPMSG_DIALUPOPT flag for dial-up users who can't be reached by
+	a broadcast command.  A member recognition command needs to be
+	sent individually to the members with this optional flag.
+	IPMSG_DIALUPOPT 标志用于直连那些不能靠广播来联系的用户。有这个选项时，成员识别命
+	令需要被单独发送给这些用户。
+
+	(Extended group)IPMSG_BR_ENTRY and IPMSG_BR_ABSENCE commands
+	sends a group name by adding the new group name after the current
+	command format character strings (Input '\0' between the current
+	command and extended name).
+	(扩展组)IPMSG_BR_ENTRY 和 IPMSG_BR_ABSENCE 命令发送一个组名是通过在现有
+	的格式化的字符串后面加上这个新组名来实现的。（在现有命令和扩展名之间加入'\0'）
+
+     2) Send/Receive Message
+     2) 收发消息
+	Send Message uses an IPMSG_SENDMSG command that can input a message
+	in the extended area.
+	使用 IPMSG_SENDMSG 命令发送消息，消息内容添加在附加信息中。
+	Receive Message sends back an IPMSG_RECVMSG command only
+	if an IPMSG_SENDCHECKOPT flag is ON. Input the original packet number
+	to the extended area.
+	在接收消息时，如果对方要求回信确认(IPMSG_SENDCHECKOPT位打开)，则需发送 IPMSG_RECVMSG 命
+	令并将对方发送的数据包的编号放在附加信息中一同发送至消息发送方。
+
+	Broadcast Message Send uses an IPMSG_BOADCASTOPT command
+	and an IPMSG_SENDMSG flag should be ON.
+	发送广播消息需要使用IPMSG_BOADCASTOPT标志和IPMSG_SENDMSG命令。
+	Auto-Send packet(absence notice) needs to be added to IPMSG_AUTORETOPT
+	for ping-pong protection. If either one or another packet is ON, then
+	confirmation/auto-send packet is not sent back.
+	自动发送包（缺席通知）还需要加上 IPMSG_AUTORETOPT 标志以得到请求-应答保护。如果一个包或
+	另一个包中该标志位被打开，，那么确认/自动发送包就不会回送。（这是为了避免通讯双方均为自动发包状
+	态而出现无限循环）
+
+	Send Message Sealing needs to be an IPMSG_SECRETOPT packet ON.
+	In this case, Receive Message sends an IPMSG_READMSG command.
+	Input the original packet number to the extended area.
+
+	(Additional IPMSG_NOADDLISTOPT)
+	（附加的IPMSG_NOADDLISTOPT）
+	When receiving an IPMSG_SENDMSG packet from a host that is
+	not on your Send/Receive list, IPMsg will either confirm a host by
+	sending an IPMSG_BR_ENTRY command or add a host name to
+	the Send/Receive list.
+	当从一台主机收到一个没有在你的发送/接受列表中的 IPMSG_SENDMSG 包，IPMSG或者发送一个
+	IPMSG_BR_ENTRY 命令，或者把他的的主机名添加到发送/接受列表中。
+	However, single-shot Message Send/Receive action needs to be avoided.
+	Add an IPMSG_NOADDLISTOPT flag to an IPMSG_SENDMSG command.
+	然而，需要避免single-shot消息的发送/接受行为。它需要在 IPMSG_SENDMSG 命令上添加一
+	个 IPMSG_NOADDLISTOPT 标志。
+
+	(Additional IPMSG_READCHECKOPT from version-8)
+	（version8 中附加的IPMSG_READCHECKOPT）
+	When an IPMSG_READMSG command contains an IPMSG_READCHECKOPT flag,
+	IPMsg process is the same as IPMSG_SENDMSG with an
+	IPMSG_SENDCHECKOPT flag.
+	However, Send Message uses an IPMSG_ANSREADMSG command,
+	not IPMSG_RECVMSG.
+    当一个 IPMSG_READMSG 命令包含一个 IPMSG_READCHECKOPT 标志时；IPMSG处理 IPMSG_SENDMSG 同
+	样需要一个 IPMSG_SENDCHECKOPT 选项。
+	但是，发送消息使用 IPMSG_ANSREADMSG 命令，而不是 IPMSG_RECVMSG。
+
+     3) Message Send/Receive | Encrypted extension (Added in the version-9)
+	 3) 收发消息|加密扩展（添加于第9版）
+
+	Use the combination of Public-key(RSA) and common key(RC2/Blowfish).
+	(Encrypted extension area is used in hex format.)
+
+	(Public key acquisition)Send an IPMSG_GETPUBKEY command to Receive
+	Message. Receive Message gets an IPMSG_ANSPUBKEY that
+	means receiving RSA public key from Send Message.
+
+	IPMSG_GETPUBKEY/IPMSG_ANSPUBKEY both require the value which is
+	encryption capability (Exp. IPMSG_RSA_1024) flag uses "OR" at first
+	part of extension
+
+	In addition, In IPMSG_ANSPUBKEY, public key written as EE-NNNNNN
+	E=Exponent丄N=method)devide by ':'. and Input the Fdelimiter '-'
+	between E and N.
+
+	This sequence can be skipped after the 2nd Send/Receive process by
+	memorizing public key and encrypted data.
+
+	(Encrypted message)After a sender creates a common key that is
+	supported both sender and receiver, a common key can encrypt a message.
+	In addition, a receiver's public key encrypts the common key.
+
+
+	(Encrypted message transmission) IPMSG_ENCRYPTOPT is used in
+	IPMSG_SENDMSG. At the first part of extension, input the value which
+	is 'or' resoult from Convination of public key and common key type .
+	Then use common key which encrypt with public key devide by ':'.
+	Then input message which is eccrypted by public key devide by ':'.
+	If both supports IPMSG_SIGN_XXX, then add ':' and signeture.
+
+	Also, In the method of encode padding, PKCS#1ECB key is used for RSA,
+	PKCS#5 CBC common key is used for RC2/blowfish.
+
+	Also, The Packet related to Entry manifestation the capability of
+	ecryption support using  IPMSG_ENCRYPTOPT
+
+     4) Extension with file attachment(Available from version-9)
+	 4) 附加文件的扩充(添加于第9版)
+
+	An IPMSG_SENDMSG command with an IPMSG_FILEATTACHOPT flag for
+	File transfer (download permission)notification sends a message
+	with attachment.
+	Input '\0' after the message and attachment file data.
+
+
+	fileID:filename:size:mtime:fileattr[:extend-attr=val1
+	[,val2...][:extend-attr2=...]]:\a:fileID...
+	(size, mtime, and fileattr describe hex format.
+	 If a filename contains ':', please replace with "::".)
+
+	When Receive Message downloads an attachment file, an IPMSG_GETFILEDATA
+	command requests a data transmission packet to the TCP port that is the same number
+	as the UDP sending port number. Input packetID:fileID:offset to the extended area.
+	(Use all hex format.)
+	File Transfer side receives the request. After recognizing that it's a correct request,
+	then send the specified data (no format)
+
+	When the data receiving side downloads a hierarchical attachment file,
+	use an IPMSG_GETDIRFILES command and input a packetID:fileID
+	to the extended area and send a data transmission request packet.
+	(all hex format)
+
+	Data sending side sends the following hierarchical data format.
+	header-size:filename:file-size:fileattr[:extend-attr=val1
+	[,val2...][:extend-attr2=...]]:contents-data
+	Next headersize: Next filename...
+	(All hex format except for filename and contetns-data)
+
+	header-size is from the beginning of header-size to the delimiter ':'
+	that is before contents-data. extend-attr can be omitted and used multiple
+	extended attributes. Use '=' for data input.
+
+	When fileattr is IPMSG_FILE_DIR, IPMsg recognizes that it is automatically
+	in the directory, the next file data is after the directory.
+
+	When fileattr is IPMSG_FILE_RETPARENT, IMPsg recognizes that it returns
+	to the parent directory. In this case, File name is always "." and the attribute
+	value is the current directory data.
+
+	Sending process starts from the attachment directly and returns the
+	IPMSG_FILE_RETPARENT command to the attachment directory.
+
+	Add an IPMSG_FILEATTACHOPT flag for an Entry packet to support the
+	attachment file.
+
+     5) Other commands
+	 5) 其他命令
+
+	When acquiring different versions, send an IPMSG_GETINFO command.
+	Receiving side sends the version information character string to
+	extended area.
+	当需要不同版本信息时，发送 IPMSG_GETINFO 命令。接受方在扩展信息区加上版本信息来回应。
+
+	Send an IPMSG_GETABSENCEINFO command for acquiring an absence message.
+	Receiving side sends an IPMSG_SENDABSENCEINFO back if the status is absence mode.
+	If the status is not absence mode, a character string "Not absence mode" will be sent back.
+    发送 IPMSG_GETABSENCEINFO 命令来得到缺席模式时的信息。如果接受方是在缺席模式下，则发
+	送 IPMSG_SENDABSENCEINFO。如果不是，则发送字符串"Not absence mode"。
+
+     6) Confirmation/Retry
+	 6) 确认/重发
+
+	If a confirmation packet for IPMSG_SENDMSG or IPMSG_RECVMSG is not delivered
+	within a specified time, then it will be sent again.
+	如果 IPMSG_SENDMSG 和 IPMSG_RECVMSG 的确认包在一个设定的时间内没有返回，那就需要重发。
+	A number of retry actions or interval period is depended on the current condition.
+	重发次数和时间间隔依赖于当前条件。
+
+
+  4. Other
+  4. 其他
+
+     1) Linefeed
+	 1) 换行
+
+	Linefeed characters in Send Message is standardized with UNIX type ('0x0a').
+	Please change if needed.
+	发送消息中换行符是UNIX的类型('0x0a')，如果需要可以改变。
+
+     2) Delimiter ':'
+	 2) 分隔符 ':'
+
+	':' is used as a delimiter. You can't use this delimiter for user name
+	and host name.
+	':' 被用作分隔符。你不能在用户名和主机名中使用':'。
+	If the use/host names contain a ':', please replace with another sign,
+	for an example ';'.
+	如果用户名/主机名包含了':'，请用其他的符号替换，比如';'。
+	Although using this delimiter isn't problem as yet, I may create an
+	escape sequence.
+	使用分隔符不是问题所在，可以创建一个转义序列。
+
+     3) Kanji codes
+
+	SJIS
+
+
+  5. Contact e-mail address
+
+	E-Mail shirouzu@h.email.ne.jp
+
+
+Note
+	See ipmsg.h for command codes.
+	Please e-mail me your comments and suggestions.
+
