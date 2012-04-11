@@ -1,22 +1,41 @@
 #include "chatwindow_manager.h"
+#include "ipmsg_packet.h"
 
 ChatWindowManager::ChatWindowManager(QObject *parent) :
 	QObject(parent)
 {
-	m_pChatWin = NULL;
 }
 
 ChatWindowManager::~ChatWindowManager()
 {
-	if(NULL != m_pChatWin)
-		delete m_pChatWin;
+    _destroyAllChatWindow();
 }
 
-void ChatWindowManager::newMsg()
+void ChatWindowManager::newMsg(IpMsgRecvPacket *packet)
 {
-	if(NULL == m_pChatWin)
+	// find the chat window by sender ip. If not found, create one.
+	IpMsgChatWindows::iterator it = m_IpMsgChatWindows.find(packet->ip());
+	if(m_IpMsgChatWindows.end() != it)
 	{
-		m_pChatWin = new ChatWindow;
+		it.value()->show();
 	}
-	m_pChatWin->show();
+	else
+	{
+		ChatWindow* pChatWin = new ChatWindow;
+		m_IpMsgChatWindows.insert(packet->ip(), pChatWin);
+		pChatWin->show();
+	}
+
+	delete packet;
+
+}
+
+void ChatWindowManager::_destroyAllChatWindow(void)
+{
+	IpMsgChatWindows::iterator it = m_IpMsgChatWindows.begin();
+	for(; it != m_IpMsgChatWindows.end(); ++it)
+	{
+		delete it.value();
+	}
+	m_IpMsgChatWindows.clear();
 }

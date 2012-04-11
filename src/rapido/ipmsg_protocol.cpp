@@ -145,7 +145,8 @@ void IpMsgProtocol::readPendingDatagrams()
 			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
 			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
 
-			emit newMsg();
+            IpMsgRecvPacket* pPacket = new IpMsgRecvPacket;
+            emit newMsg(pPacket);
 
 			break;
 		}

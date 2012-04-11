@@ -15,7 +15,8 @@ HEADERS += \
     user_manager.h \
     ipmsg_user.h \
     chatwindow.h \
-    chatwindow_manager.h
+    chatwindow_manager.h \
+    ipmsg_packet.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -28,7 +29,8 @@ SOURCES += \
     user_manager.cpp \
     ipmsg_user.cpp \
     chatwindow.cpp \
-    chatwindow_manager.cpp
+    chatwindow_manager.cpp \
+    ipmsg_packet.cpp
 
 RESOURCES += \
     resources/rapido.qrc

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8" />
+<head>
+<title>Rapido TODO List</title>
+<style type="text/css">
+body {
+	font-family:"微软雅黑", Tahoma;
+}
+
+.todo {
+	color: #00f;
+}
+
+.ok {
+	text-decoration:line-through;
+	color: #999;
+}
+
+</style>
+</head>
+
+<body>
+<h1>Rapido TODO List</h1>
+<hr/>
+
+<h2>当前要做的：</h2>
+<ul>
+	<li class="ok">创建聊天窗口管理器来管理多个聊天窗口；</li>
+	<li class="todo">聊天窗口关闭时，如何同时将聊天窗口管理器中记录的该窗口的信息清除？</li>
+	<li class="todo">聊天对象下线时，本地打开的聊天窗口如何处理？</li>
+	<li class="todo">封装一个类用于解析接收到的消息，合成要发送的消息。</li>
+	<li class="todo">高版本的FeiQ（2.5.0）发送消息前总是会试图获取对方的公钥，所以消息加密功能需要先实现，否则无法通讯。</li>
+	<li class="todo">...</li>
+</ul>
+
+<h2>长远要做的：</h2>
+<ul>
+	<li class="todo">高级用户组及其管理。</li>
+	<li class="todo">给对方发送提醒（例如会议提醒等），接收者在提醒时间到来前会得到提示。</li>
+	<li class="todo">提醒功能中发起者和接收者的协商过程。接收者并一定需要某个提醒，如何进行协商？</li>
+	<li class="todo">...</li>
+</ul>
+</body>
+</html>

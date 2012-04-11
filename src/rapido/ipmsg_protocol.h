@@ -3,6 +3,7 @@
 
 #include "ipmsg_const.h"
 #include "ipmsg_db.h"
+#include "ipmsg_packet.h"
 
 #include <QObject>
 #include <QUdpSocket>
@@ -21,7 +22,7 @@ protected:
     qint32 m_packetNo;
 
 signals:
-	void newMsg(void);
+    void newMsg(IpMsgRecvPacket *packet);
     
 private slots:
     void readPendingDatagrams();

@@ -2,8 +2,15 @@
 #define CHATWINDOW_MANAGER_H
 
 #include "chatwindow.h"
+//#include "ipmsg_packet.h"
 
 #include <QObject>
+#include <QMap>
+#include <QHostAddress>
+
+class IpMsgRecvPacket;
+
+typedef QMap<QString, ChatWindow*> IpMsgChatWindows;
 
 class ChatWindowManager : public QObject
 {
@@ -16,10 +23,13 @@ signals:
 	
 public slots:
 private slots:
-	void newMsg(void);
+    void newMsg(IpMsgRecvPacket* packet);
 
 private:
-	ChatWindow* m_pChatWin;
+    void _destroyAllChatWindow(void);
+
+private:
+	IpMsgChatWindows m_IpMsgChatWindows;
 };
 
 #endif // CHATWINDOW_MANAGER_H
