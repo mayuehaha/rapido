@@ -21,6 +21,7 @@ protected:
     qint32 m_packetNo;
 
 signals:
+	void newMsg(void);
     
 private slots:
     void readPendingDatagrams();

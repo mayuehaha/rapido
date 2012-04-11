@@ -1,5 +1,8 @@
 #include "ipmsg_thread.h"
 #include "ipmsg_protocol.h"
+#include "chatwindow_manager.h"
+
+#include "global.h"
 
 IpMsgThread::IpMsgThread(QObject *parent) :
 	QThread(parent)
@@ -25,6 +28,11 @@ void IpMsgThread::stop_and_finalize(void)
 void IpMsgThread::run(void)
 {
 	m_pIpMsg = new IpMsgProtocol;
+
+	connect(m_pIpMsg, SIGNAL(newMsg()), g_chatWindowManager, SLOT(newMsg()));
+
+
+
 	m_pIpMsg->start();
 
 	exec();

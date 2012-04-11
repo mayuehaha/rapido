@@ -13,4 +13,13 @@ void rapido_finalize(void);
 Env& rapido_env(void);
 IpMsgThread& rapido_ipmsg_thread(void);
 
+
+class ChatWindowManager;
+
+//namespace rapido
+//{
+extern ChatWindowManager* g_chatWindowManager;
+//}
+
+
 #endif // GLOBAL_H

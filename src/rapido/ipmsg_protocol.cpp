@@ -53,6 +53,12 @@ void IpMsgProtocol::start()
 
 void IpMsgProtocol::readPendingDatagrams()
 {
+//	static qint32 ii = 0;
+//	if(0 == ii)
+//	{
+//		ii = 1;
+//		emit newMsg();
+//	}
 	//static qint32 packet_no = 3;
 	//packet_no++;
 
@@ -70,7 +76,10 @@ void IpMsgProtocol::readPendingDatagrams()
 
 		// skip broadcast to myself.
 		if(senderIp == rapido_env().m_hostIp)
+		{
+			qDebug() << "message from myself, skip.";
 			continue;
+		}
 
 		QString data(datagram);
 		//qDebug() << "sender: " << senderIp << ":" << senderPort;
@@ -135,6 +144,9 @@ void IpMsgProtocol::readPendingDatagrams()
 			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":"+QByteArray::number(qint32(IPMSG_RECVMSG))+":";
 			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
 			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
+
+			emit newMsg();
+
 			break;
 		}
 		case IPMSG_RECVMSG:
@@ -142,6 +154,7 @@ void IpMsgProtocol::readPendingDatagrams()
 			break;
 		case IPMSG_READMSG:
 		{
+			qDebug() << "send to" << strSenderIp << "I have read it.";
 			//QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
 			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":"+QByteArray::number(qint32(IPMSG_ANSREADMSG))+":";
 			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
