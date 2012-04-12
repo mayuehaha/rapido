@@ -29,7 +29,7 @@ void IpMsgThread::run(void)
 {
 	m_pIpMsg = new IpMsgProtocol;
 
-    connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), g_chatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
+	connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
 
 	m_pIpMsg->start();
 

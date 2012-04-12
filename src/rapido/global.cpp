@@ -3,7 +3,7 @@
 
 #include "chatwindow_manager.h"
 
-ChatWindowManager* g_chatWindowManager = NULL;
+ChatWindowManager* rapido::pChatWindowManager = NULL;
 
 
 bool rapido_intialize(void)
@@ -11,7 +11,7 @@ bool rapido_intialize(void)
 	if(!rapido_env().Initialize())
 		return false;
 
-	g_chatWindowManager = new ChatWindowManager;
+	rapido::pChatWindowManager = new ChatWindowManager;
 
 	return true;
 }
@@ -26,8 +26,8 @@ void rapido_finalize(void)
 
 	rapido_ipmsg_thread().stop_and_finalize();
 
-	if(NULL != g_chatWindowManager)
-		delete g_chatWindowManager;
+	if(NULL != rapido::pChatWindowManager)
+		delete rapido::pChatWindowManager;
 }
 
 Env& rapido_env(void)

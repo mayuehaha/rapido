@@ -24,6 +24,7 @@ public:
 private:
     QHostAddress m_ipAddress;
 	quint16 m_port;
+	QString m_strContent;
 };
 
 class IpMsgSendPacket : public IpMsgPacket

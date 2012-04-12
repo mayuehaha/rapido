@@ -8,6 +8,7 @@ IpMsgPacket::IpMsgPacket(QHostAddress senderIp, quint16 senderPort, const QStrin
 {
 	m_ipAddress = senderIp;
 	m_port = senderPort;
+	m_strContent = strContent;
 }
 
 // ===============================================================

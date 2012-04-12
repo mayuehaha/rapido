@@ -16,10 +16,10 @@ IpMsgThread& rapido_ipmsg_thread(void);
 
 class ChatWindowManager;
 
-//namespace rapido
-//{
-extern ChatWindowManager* g_chatWindowManager;
-//}
+namespace rapido
+{
+extern ChatWindowManager* pChatWindowManager;
+}
 
 
 #endif // GLOBAL_H
