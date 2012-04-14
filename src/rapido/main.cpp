@@ -39,6 +39,10 @@ int main(int argc, char* argv[])
 
     win.show();
 
+	// System tray icon
+	win.InitTrayIcon();
+	win.ShowTrayIcon();
+
     // Start the IpMsg handler thread.
 	rapido_ipmsg_thread().start();
 
