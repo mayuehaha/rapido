@@ -11,7 +11,7 @@ public:
     IpMsgPacket();
 
     // create from received packet.
-	IpMsgPacket(QHostAddress senderIp, quint16 senderPort, const QString& strContent);
+	IpMsgPacket(QHostAddress senderIp, quint16 senderPort, const QByteArray& datagram);
 
     virtual ~IpMsgPacket(){}
 
@@ -38,7 +38,8 @@ class IpMsgRecvPacket : public IpMsgPacket
 {
 public:
     IpMsgRecvPacket();
-    ~IpMsgRecvPacket();
+	IpMsgRecvPacket(QHostAddress senderIp, quint16 senderPort, const QByteArray& datagram);
+	~IpMsgRecvPacket();
 };
 
 #endif // IPMSG_PACKET_H

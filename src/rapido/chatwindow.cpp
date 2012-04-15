@@ -9,9 +9,9 @@ ChatWindow::ChatWindow(QWidget *parent) :
 	QString strUrl = "file:///";
 	strUrl += strExecPath;
 #if defined(Q_OS_MAC)
-	strUrl += "/../../../skin/index.html";
+	strUrl += "/../../../skin/chat.html";
 #else
-	strUrl += "/../skin/index.html";
+	strUrl += "/../skin/chat.html";
 #endif
 	QUrl startURL = QUrl(strUrl);
 

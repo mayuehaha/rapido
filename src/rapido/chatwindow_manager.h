@@ -10,6 +10,7 @@
 
 class IpMsgRecvPacket;
 
+// sender ip <==> chat window
 typedef QMap<QString, ChatWindow*> IpMsgChatWindows;
 
 class ChatWindowManager : public QObject

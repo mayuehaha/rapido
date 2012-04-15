@@ -4,11 +4,12 @@ IpMsgPacket::IpMsgPacket()
 {
 }
 
-IpMsgPacket::IpMsgPacket(QHostAddress senderIp, quint16 senderPort, const QString& strContent)
+IpMsgPacket::IpMsgPacket(QHostAddress senderIp, quint16 senderPort, const QByteArray& datagram)
 {
 	m_ipAddress = senderIp;
 	m_port = senderPort;
-	m_strContent = strContent;
+	//m_strContent = strContent;
+
 }
 
 // ===============================================================
@@ -25,6 +26,12 @@ IpMsgSendPacket::~IpMsgSendPacket()
 
 IpMsgRecvPacket::IpMsgRecvPacket()
 {
+}
+
+IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress senderIp, quint16 senderPort, const QByteArray& datagram)
+	: IpMsgPacket(senderIp, senderPort, datagram)
+{
+
 }
 
 IpMsgRecvPacket::~IpMsgRecvPacket()
