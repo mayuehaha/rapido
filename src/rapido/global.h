@@ -18,7 +18,8 @@ class ChatWindowManager;
 
 namespace rapido
 {
-extern ChatWindowManager* pChatWindowManager;
+	extern ChatWindowManager* pChatWindowManager;
+
 }
 
 

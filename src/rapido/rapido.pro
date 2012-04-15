@@ -16,7 +16,8 @@ HEADERS += \
     ipmsg_user.h \
     chatwindow.h \
     chatwindow_manager.h \
-    ipmsg_packet.h
+    ipmsg_packet.h \
+    ipmsg_msg.h
 
 SOURCES += \
     mainwindow.cpp \
@@ -30,7 +31,8 @@ SOURCES += \
     ipmsg_user.cpp \
     chatwindow.cpp \
     chatwindow_manager.cpp \
-    ipmsg_packet.cpp
+    ipmsg_packet.cpp \
+    ipmsg_msg.cpp
 
 RESOURCES += \
     resources/rapido.qrc
@@ -38,3 +40,15 @@ RESOURCES += \
 RC_FILE = resources/rapido.rc
 
 #DEFINES += QT_NO_DEBUG_OUTPUT
+
+
+
+
+
+
+
+
+
+
+
+

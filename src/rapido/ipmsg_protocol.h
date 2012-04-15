@@ -26,6 +26,8 @@ signals:
     
 private slots:
     void readPendingDatagrams();
+public slots:
+    void processSendMsg();
 };
 
 #endif // IPMSGPROTOCOL_H

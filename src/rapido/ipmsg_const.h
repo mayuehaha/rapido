@@ -10,6 +10,7 @@ Some define.
 // flag position from received data
 #define R_IPMSG_FLAGS_POS               4
 #define R_IPMSG_NORMAL_FIELD_COUNT      6
+#define R_SEND_MSG_PROCESS_INTERVAL   200
 
 
 
