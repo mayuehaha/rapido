@@ -8,7 +8,7 @@ body, a, p, td, li, input, textarea {
 }
 
 body {
-	background:url(images/bg.jpg) no-repeat left top;
+	background:url(images/bg.png) repeat left top;
 }
 
 table.plain {
