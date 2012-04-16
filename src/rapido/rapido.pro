@@ -2,7 +2,7 @@ TRANSLATIONS = resources/i18n/rapido_zh_CN.ts
 
 QT += network webkit sql
 
-win32:CONFIG += console
+#win32:CONFIG += console
 
 HEADERS += \
     mainwindow.h \

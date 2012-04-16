@@ -23,6 +23,7 @@ public:
 	QString m_strHostName;
 	QString m_strLoginName;
 
+	QString m_strHtmlBasePath;
 };
 
 #endif // ENV_H

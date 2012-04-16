@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <QtGui>
+#include "global.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QWebView(parent)
@@ -8,14 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	//m_pTrayIcon = NULL;
 	//m_pTrayMenu = NULL;
 
-    QString strExecPath = QApplication::applicationDirPath();
-    QString strUrl = "file:///";
-    strUrl += strExecPath;
-#if defined(Q_OS_MAC)
-	strUrl += "/../../../skin/index.html";
-#else
-	strUrl += "/../skin/index.html";
-#endif
+	QString strUrl = rapido_env().m_strHtmlBasePath;
+	strUrl += "login.html";
 	QUrl startURL = QUrl(strUrl);
 
     // Load web content now!

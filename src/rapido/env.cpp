@@ -1,5 +1,6 @@
 #include "env.h"
 
+#include <QtGui>
 #include <QProcess>
 #include <QFile>
 //#include <QStringList>
@@ -11,6 +12,15 @@ Env::Env()
 bool Env::Initialize(void)
 {
 	_getLoginName();
+
+
+	m_strHtmlBasePath = "file:///";
+	m_strHtmlBasePath += QApplication::applicationDirPath();
+#if defined(Q_OS_MAC)
+	m_strHtmlBasePath += "/../../../skin/";
+#else
+	m_strHtmlBasePath += "/../skin/";
+#endif
 
 	if(!_getNetworkInfo())
 		return false;
