@@ -1,7 +1,6 @@
 #include <QtGui>
-#include "global.h"
-#include "mainwindow.h"
 
+#include "mainwindow.h"
 #include "global.h"
 
 int main(int argc, char* argv[])

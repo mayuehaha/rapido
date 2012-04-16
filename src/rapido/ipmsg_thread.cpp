@@ -32,9 +32,7 @@ void IpMsgThread::run(void)
 
 	m_pIpMsg = new IpMsgProtocol;
 
-
-	connect(&timer, SIGNAL(timeout()),
-		m_pIpMsg, SLOT(processSendMsg()));
+	connect(&timer, SIGNAL(timeout()), m_pIpMsg, SLOT(processSendMsg()));
 
 	connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
 

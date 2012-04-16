@@ -7,6 +7,7 @@
 #include <QDebug>
 
 #include "global.h"
+#include "ipmsg_packet.h"
 
 /*
 command:
@@ -51,6 +52,40 @@ void IpMsgProtocol::start()
     m_socket.writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
 }
 
+void IpMsgProtocol::broadcastLogin()
+{
+
+	qDebug() << "broadcastLogin";
+
+	quint32 flags = 0;
+	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
+
+	QString entryMessage = QString("%1%2%3%4").arg("ÕÅ´óÂÌ")
+			.arg(QChar('\0'))
+			.arg("À­µÇ")
+			.arg(QChar('\0'));
+	IpMsgSendPacket ipMsgSendPacket(QHostAddress::Null, 0/* port */,
+					entryMessage, ""/* extendedInfo */, flags);
+
+	//rapido::sendPacketList
+	rapido::sendPacketList.append(ipMsgSendPacket);
+	//Global::msgThread->addSendMsg(Msg(sendMsg));
+
+	//if(!m_socket.bind(QHostAddress::Any, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+	if(!m_socket.bind(rapido_env().m_hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+	{
+		qDebug() << "Cannot bind.";
+		return;
+	}
+
+	// broadcast that I'm online. :)
+	//QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:A-PC:1:ApexLiu";
+	//QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
+	QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ rapido_env().m_strHostName.toAscii() +":1:" + rapido_env().m_strLoginName.toAscii();
+	//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
+	qDebug() << "send:" << QString(datagram);
+	m_socket.writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
+}
 void IpMsgProtocol::readPendingDatagrams()
 {
 //	static qint32 ii = 0;
@@ -180,4 +215,10 @@ void IpMsgProtocol::readPendingDatagrams()
 		}
 		}
     }
+}
+
+
+void IpMsgProtocol::processSendMsg()
+{
+	//qDebug()<<"mayuehehe";
 }

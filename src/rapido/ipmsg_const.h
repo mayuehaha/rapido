@@ -8,12 +8,26 @@ Some define.
 #define R_IPMSG_COMMAND_SEPERATOR		':'
 
 // flag position from received data
+
+
+#define R_IPMSG_VERSION_POS             0
+#define R_IPMSG_PACKET_NO_POS           1
+#define R_IPMSG_LOG_NAME_POS            2
+#define R_IPMSG_HOST_POS                3
+#define R_IPMSG_FLAGS_POS               4
+#define R_IPMSG_ADDITION_INFO_POS       5
+#define R_IPMSG_EXTENDED_INFO_POS       6
+
 #define R_IPMSG_FLAGS_POS               4
 #define R_IPMSG_NORMAL_FIELD_COUNT      6
 #define R_SEND_MSG_PROCESS_INTERVAL   200
 
 
-
+#define R_COMMAND_SEPERATOR       ':'
+#define R_EXTEND_INFO_SEPERATOR   '\0'
+#define R_FILE_NAME_ESCAPE         "\a\a"
+#define R_FILE_NAME_BEFORE        "::"
+#define R_FILE_NAME_AFTER         ":"
 
 
 

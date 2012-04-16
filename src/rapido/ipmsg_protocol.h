@@ -26,6 +26,7 @@ signals:
     
 private slots:
     void readPendingDatagrams();
+	void broadcastLogin();
 public slots:
     void processSendMsg();
 };

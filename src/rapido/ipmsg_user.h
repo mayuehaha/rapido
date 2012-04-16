@@ -3,6 +3,8 @@
 
 #include <QHostAddress>
 
+
+
 class IpMsgUser
 {
 public:
@@ -30,11 +32,13 @@ public:
         myDisplayLevel = displayLevel;
     }
     QString displayLevel() const { return myDisplayLevel; }
+	void initIpMsgUser(QString &packet);
 
 private:
     // Get group name or absence string
     QString parseAdditionalInfo(QString &packet);
-    void initUser(QString &packet);
+
+
 
     //user name
     QString myName;
