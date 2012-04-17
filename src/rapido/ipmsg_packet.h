@@ -51,7 +51,7 @@ class IpMsgRecvPacket : public IpMsgPacket
 {
 public:
     IpMsgRecvPacket();
-	IpMsgRecvPacket(QHostAddress senderIp, quint16 senderPort, const QByteArray& datagram);
+	IpMsgRecvPacket(QHostAddress senderIp, quint16 senderPort, QString datagram);
 	~IpMsgRecvPacket();
 };
 

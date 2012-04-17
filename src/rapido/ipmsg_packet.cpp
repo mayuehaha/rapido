@@ -60,10 +60,10 @@ IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress senderIp, quint16 senderPort, QStr
 	}
 
 	m_extendedInfo = m_packet.section(QChar(R_IPMSG_EXTENDED_INFO_POS), 1, 1);
-	parseAdditionalInfo();
+//	parseAdditionalInfo();
 
-	m_packetNoString = list.at(MSG_PACKET_NO_POS);
-	m_flags = list.at(MSG_FLAGS_POS).toUInt();
+//	m_packetNoString = list.at(MSG_PACKET_NO_POS);
+//	m_flags = list.at(MSG_FLAGS_POS).toUInt();
 }
 
 IpMsgRecvPacket::~IpMsgRecvPacket()
