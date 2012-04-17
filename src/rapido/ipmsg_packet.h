@@ -23,7 +23,7 @@ public:
 	virtual quint16 port(void) const { return m_port; }
 
 
-protected:
+public:
     QHostAddress m_ipAddress;
 	quint16 m_port;
 	QString m_strContent;

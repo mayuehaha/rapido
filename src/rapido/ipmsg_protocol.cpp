@@ -42,7 +42,7 @@ void IpMsgProtocol::start()
         qDebug() << "Cannot bind.";
         return;
     }
-
+	broadcastLogin();
 	// broadcast that I'm online. :)
     //QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:A-PC:1:ApexLiu";
 	//QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
@@ -67,8 +67,9 @@ void IpMsgProtocol::broadcastLogin()
 	IpMsgSendPacket ipMsgSendPacket(QHostAddress::Null, 0/* port */,
 					entryMessage, ""/* extendedInfo */, flags);
 
+	qDebug() << "hehe" <<ipMsgSendPacket.m_packet;
 	//rapido::sendPacketList
-	rapido::sendPacketList.append(ipMsgSendPacket);
+	//rapido::sendPacketList.append(ipMsgSendPacket);
 	//Global::msgThread->addSendMsg(Msg(sendMsg));
 
 	//if(!m_socket.bind(QHostAddress::Any, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))

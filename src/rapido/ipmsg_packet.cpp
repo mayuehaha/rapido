@@ -1,4 +1,5 @@
 #include "ipmsg_packet.h"
+#include "ipmsg_const.h"
 
 IpMsgPacket::IpMsgPacket()
 {
@@ -19,28 +20,32 @@ IpMsgSendPacket::IpMsgSendPacket()
 
 }
 IpMsgSendPacket::IpMsgSendPacket(QHostAddress address, quint16 port, QString additionalInfo,
-	QString extendedInfo, quint32 flags)//: m_ipAddress(address), m_port(port), m_additionalInfo(additionalInfo)//,
-	//m_extendedInfo(extendedInfo), m_flags(flags)
+	QString extendedInfo, quint32 flags)
 {
+	m_ipAddress = address;
+	m_port = port;
+	m_additionalInfo = additionalInfo;
+	m_extendedInfo = extendedInfo;
+	m_flags = flags;
 	m_packetNoString = "9527";
 	//IpMsgUser = ;
 
-	//constructPacket();
+	constructPacket();
 }
 
 void IpMsgSendPacket::constructPacket()
 {
-//	m_packet.append(QString("%1%2").arg(IPMSG_VERSION).arg(COMMAND_SEPERATOR));
+	m_packet.append(QString("%1%2").arg(IPMSG_VERSION).arg(R_COMMAND_SEPERATOR));
 
-//	m_packet.append(QString("%1%2").arg(m_packetNoString)
-//					.arg(COMMAND_SEPERATOR));
+	m_packet.append(QString("%1%2").arg(m_packetNoString)
+					.arg(R_COMMAND_SEPERATOR));
 
-//	m_packet.append(IpMsgUser.loginName());
-//	m_packet.append(COMMAND_SEPERATOR);
-//	m_packet.append(IpMsgUser.host());
-//	m_packet.append(COMMAND_SEPERATOR);
-//	m_packet.append(QString("%1%2").arg(m_flags).arg(COMMAND_SEPERATOR));
-//	m_packet.append(m_additionalInfo);
+	m_packet.append(m_ipMsgUser.getLoginName());
+	m_packet.append(R_COMMAND_SEPERATOR);
+	m_packet.append(m_ipMsgUser.getHost());
+	m_packet.append(R_COMMAND_SEPERATOR);
+	m_packet.append(QString("%1%2").arg(m_flags).arg(R_COMMAND_SEPERATOR));
+	m_packet.append(m_additionalInfo);
 }
 
 IpMsgSendPacket::~IpMsgSendPacket()
