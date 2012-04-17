@@ -21,6 +21,7 @@ protected:
 	IpMsgDB m_db;
     qint32 m_packetNo;
 	void broadcastLogin();
+    void handleMsg(IpMsgSendPacket IpMsgPkt);
 signals:
     void newMsg(IpMsgRecvPacket *packet);
     

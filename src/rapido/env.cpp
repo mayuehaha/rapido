@@ -15,7 +15,7 @@ bool Env::Initialize(void)
 
 	if(!_getNetworkInfo())
 		return false;
-	rapido::myself = IpMsgUser(m_strLoginName, m_hostIp, 1);
+
 	return true;
 }
 
