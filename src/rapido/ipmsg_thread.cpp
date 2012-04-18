@@ -27,7 +27,12 @@ void IpMsgThread::stop_and_finalize(void)
 
 void IpMsgThread::run(void)
 {
+	QTimer timer;
+	timer.start(R_SEND_MSG_PROCESS_INTERVAL);
+
 	m_pIpMsg = new IpMsgProtocol;
+
+	connect(&timer, SIGNAL(timeout()), m_pIpMsg, SLOT(processSendMsg()));
 
 	connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
 

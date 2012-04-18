@@ -5,6 +5,8 @@
 
 ChatWindowManager* rapido::pChatWindowManager = NULL;
 
+QList<IpMsgSendPacket> rapido::sendPacketList;
+
 
 bool rapido_intialize(void)
 {
