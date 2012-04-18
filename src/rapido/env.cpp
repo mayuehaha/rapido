@@ -1,4 +1,5 @@
 #include "env.h"
+#include "global.h"
 
 #include <QtGui>
 #include <QProcess>

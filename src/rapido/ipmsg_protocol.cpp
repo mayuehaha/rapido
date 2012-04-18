@@ -7,6 +7,7 @@
 #include <QDebug>
 
 #include "global.h"
+#include "ipmsg_packet.h"
 
 /*
 command:
@@ -29,11 +30,12 @@ IpMsgProtocol::IpMsgProtocol(QObject *parent)
 
 void IpMsgProtocol::start()
 {
-	if(!m_db.Connect())
+	//not yet
+	/*if(!m_db.Connect())
 	{
 		qDebug() << "Cannot load db.";
 		//return;
-	}
+	}*/
 
 	//if(!m_socket.bind(QHostAddress::Any, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
 	if(!m_socket.bind(rapido_env().m_hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
@@ -42,13 +44,31 @@ void IpMsgProtocol::start()
         return;
     }
 
-	// broadcast that I'm online. :)
+    // broadcast that I'm online. :)
+    broadcastLogin();
+
     //QByteArray datagram = "1:" + QByteArray::number(1) + ":apex:A-PC:1:ApexLiu";
 	//QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ hostName.toAscii() +":1:ApexLiu";
-	QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ rapido_env().m_strHostName.toAscii() +":1:" + rapido_env().m_strLoginName.toAscii();
+    //QByteArray datagram = "1:" + QByteArray::number(++m_packetNo) + ":apex:"+ rapido_env().m_strHostName.toAscii() +":1:" + rapido_env().m_strLoginName.toAscii();
     //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-	qDebug() << "send:" << QString(datagram);
-    m_socket.writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
+    //qDebug() << "send:" << QString(datagram);
+    //m_socket.writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, IPMSG_DEFAULT_PORT);
+}
+
+void IpMsgProtocol::broadcastLogin()
+{
+    quint32 flags = 0;
+	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
+
+    QString entryMessage = QString("%1%2%3%4").arg("zhangdalv")
+			.arg(QChar('\0'))
+            .arg("dalv")
+			.arg(QChar('\0'));
+    IpMsgSendPacket ipMsgSendPacket(QHostAddress::Broadcast, IPMSG_DEFAULT_PORT/* port */,
+					entryMessage, ""/* extendedInfo */, flags);
+
+    rapido::sendPacketList.append(ipMsgSendPacket);
+    qDebug() << "broadcast:  " <<ipMsgSendPacket.m_packet;
 }
 
 void IpMsgProtocol::readPendingDatagrams()
@@ -98,21 +118,22 @@ void IpMsgProtocol::readPendingDatagrams()
 		qint32 cmd = IPMSG_GET_MODE(flags);
 		switch(cmd)
 		{
-		case IPMSG_NOOPERATION:
-			break;
-		case IPMSG_BR_ENTRY:
-		{
-			// add this one into user list.
-			qDebug() << "somebody online now." << strSenderIp;
+            case IPMSG_NOOPERATION:
+                break;
+            //somebody is online message
+            case IPMSG_BR_ENTRY:
+            {
+                // add this one into user list.
+               // qDebug() << "somebody online now." << strSenderIp;
 
-			// told he/she/it I'm already online. :)
+                // told he/she/it I'm already online. :)
 
-			//QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
-			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":" + QByteArray::number(qint32(IPMSG_ANSENTRY)) + ":";
-			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
-			break;
-		}
+                //QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
+                QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":" + QByteArray::number(qint32(IPMSG_ANSENTRY)) + ":";
+                //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
+                m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
+                break;
+            }
 
 
 			break;
@@ -180,4 +201,74 @@ void IpMsgProtocol::readPendingDatagrams()
 		}
 		}
     }
+}
+
+
+void IpMsgProtocol::processSendMsg()
+{
+    for (int i = 0; i < rapido::sendPacketList.size(); ++i) {
+        handleMsg(rapido::sendPacketList.at(i));
+    }
+    rapido::sendPacketList.clear();
+}
+
+
+//can it be run without trouble with the object not the point
+void IpMsgProtocol::handleMsg(IpMsgSendPacket IpMsgPkt)
+{
+    m_socket.writeDatagram(IpMsgPkt.m_packet.toLocal8Bit().data(), IpMsgPkt.m_packet.size(), IpMsgPkt.m_ipAddress, IpMsgPkt.m_port);
+//    // Delete msg
+//    if (msg->state() == MsgBase::SendAckOk) {
+//        Global::msgThread->removeSendMsgNotLock(msg->packetNoString());
+//    }
+
+//    // Delete msg
+//    if (msg->sendTimes() >= MAX_RE_SEND_TIMES) {
+//        Global::msgThread->removeSendMsgNotLock(msg->packetNoString());
+//    }
+
+//    // Send msg
+//    if (msg->state() == MsgBase::NotSend
+//        || isResendNeeded(msg)) {
+
+//        msg->setState(MsgBase::Sending);
+//        msg->incrementSendTimes();
+
+//        switch (GET_MODE(msg->flags())) {
+//        case IPMSG_BR_ENTRY:
+//        case IPMSG_BR_EXIT:
+//        case IPMSG_BR_ABSENCE:
+//            broadcastUserMsg(msg);
+//            Global::msgThread->removeSendMsgNotLock(msg->packetNoString());
+//            break;
+
+//        case IPMSG_ANSENTRY:
+//        case IPMSG_ANSREADMSG:
+//        case IPMSG_RELEASEFILES:
+//            broadcastMsg(msg);
+//            Global::msgThread->removeSendMsgNotLock(msg->packetNoString());
+//            break;
+
+
+//        case IPMSG_READMSG:
+//            broadcastMsg(msg);
+//            // XXX TODO: If IPMSG_READCHECKOPT is on, we need to check if
+//            // sucessfully sended.
+//            break;
+
+//        case IPMSG_RECVMSG:
+//            broadcastMsg(msg);
+//            // XXX TODO: need to check if sucessfully sended.
+//            break;
+
+//        case IPMSG_SENDMSG:
+//            broadcastMsg(msg);
+//            // XXX TODO: need to check if sucessfully sended.
+//            break;
+
+//        default:
+//            Global::msgThread->removeSendMsgNotLock(msg->packetNoString());
+//            break;
+//        }
+//    }
 }

@@ -2,7 +2,7 @@
 #define CHATWINDOW_H
 
 //#include <QMainWindow>
-#include <QWebView.h>
+#include <qwebview.h>
 
 class ChatWindow : public QWebView
 {

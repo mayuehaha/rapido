@@ -3,7 +3,7 @@
 
 #include <QtGui>
 #include <QMainWindow>
-#include <QWebView.h>
+#include <QtWebKit/qwebview.h>
 
 //#include "ipmsg_protocol.h"
 

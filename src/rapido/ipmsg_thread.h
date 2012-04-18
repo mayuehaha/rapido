@@ -2,13 +2,16 @@
 #define IPMSG_THREAD_H
 
 #include <QThread>
+#include <QMutex>
+
+
+#include "ipmsg_msg.h"
 
 class IpMsgProtocol;
 
 /*
 IpMsgThread:
 */
-
 class IpMsgThread : public QThread
 {
     Q_OBJECT
@@ -26,7 +29,9 @@ signals:
 public slots:
     
 private:
+    QMutex r_lock;
     IpMsgProtocol* m_pIpMsg;
+    QList<ipmsg_msg> r_sendMsgList;
 };
 
 #endif // IPMSG_THREAD_H

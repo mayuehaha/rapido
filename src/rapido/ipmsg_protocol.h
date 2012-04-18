@@ -20,12 +20,16 @@ protected:
     QUdpSocket m_socket;
 	IpMsgDB m_db;
     qint32 m_packetNo;
-
+	void broadcastLogin();
+    void handleMsg(IpMsgSendPacket IpMsgPkt);
 signals:
     void newMsg(IpMsgRecvPacket *packet);
     
 private slots:
     void readPendingDatagrams();
+
+public	 slots:
+    void processSendMsg();
 };
 
 #endif // IPMSGPROTOCOL_H
