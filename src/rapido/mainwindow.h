@@ -2,8 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QtGui>
-#include <QMainWindow>
-#include <QtWebKit/qwebview.h>
+//#include <QMainWindow>
+//#include <QtWebKit/qwebview.h>
+#include <QWebView>
 
 //#include "ipmsg_protocol.h"
 
@@ -21,10 +22,14 @@ protected:
     //IpMsgProtocol* m_pIpMsgThread;
 
 signals:
-    
+	void onLoginFailed(const QString& strReason);
+
 public slots:
+	void jsLogin(const QString& strUserId, const QString& strPasswd);
+
 private slots:
 	void _onTrayIconEvent(QSystemTrayIcon::ActivationReason reason);
+	void _onAddJSObject();
 	//void _onQuit();
     
 protected:
