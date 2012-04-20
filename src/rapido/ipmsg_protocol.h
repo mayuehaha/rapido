@@ -28,8 +28,8 @@ signals:
 private slots:
     void readPendingDatagrams();
 
-public	 slots:
-    void processSendMsg();
+public slots:
+	void processSendMsg();	// this slot will be connect with a timer.
 };
 
 #endif // IPMSGPROTOCOL_H

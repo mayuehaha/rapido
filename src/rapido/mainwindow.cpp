@@ -78,5 +78,7 @@ void MainWindow::_onTrayIconEvent(QSystemTrayIcon::ActivationReason reason)
 		//show();
 		//setWindowState(Qt::WindowNoState);
 		break;
+	default:
+		break;
 	}
 }
