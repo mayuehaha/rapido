@@ -59,7 +59,7 @@ void MainWindow::InitTrayIcon()
 
 	m_pTrayIcon->setContextMenu(m_pTrayMenu);
 
-	m_pTrayIcon->setIcon(QIcon(":images/rapido.png"));
+	m_pTrayIcon->setIcon(QIcon(":images/tray_icon.png"));
 	m_pTrayIcon->setToolTip(QObject::tr("Rapido - MyIM"));
 
 	// set flag, program will not exit when click the close button.

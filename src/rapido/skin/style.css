@@ -100,17 +100,19 @@ ul ul ul li {
 
 div.header_box {
 	width:100%;
-	height:128px;
+	height:112px;
 	background:url(images/bg.png) repeat left top;
 }
 
 div.myself_box {
 	width:100%;
-	height:64px;
+	height:72px;
 }
 div.myself_box .avatar {
 	float:left;
 	padding:5px 15px 5px 5px;
+	width:72px;
+	height:72px;
 }
 div.myself_box .info {
 	color:#fff;
