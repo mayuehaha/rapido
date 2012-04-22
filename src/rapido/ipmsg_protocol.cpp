@@ -118,28 +118,28 @@ void IpMsgProtocol::readPendingDatagrams()
 		qint32 cmd = IPMSG_GET_MODE(flags);
 		switch(cmd)
 		{
-            case IPMSG_NOOPERATION:
-                break;
-            //somebody is online message
-            case IPMSG_BR_ENTRY:
-            {
-                // add this one into user list.
-               // qDebug() << "somebody online now." << strSenderIp;
-
-                // told he/she/it I'm already online. :)
-
-                //QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
-                QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":" + QByteArray::number(qint32(IPMSG_ANSENTRY)) + ":";
-                //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-                m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
-                break;
-            }
-
-
+		case IPMSG_NOOPERATION:
 			break;
+			//somebody is online message
+		case IPMSG_BR_ENTRY:
+		{
+			// add this one into user list.
+			// qDebug() << "somebody online now." << strSenderIp;
+			emit onUserOnline("parse and put user name here.", strSenderIp);
+
+			// told he/she/it I'm already online. :)
+
+			//QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
+			QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":" + QByteArray::number(qint32(IPMSG_ANSENTRY)) + ":";
+			//QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
+			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
+			break;
+		}
+
 		case IPMSG_BR_EXIT:
 			// remove this one from user list.
 			qDebug() << "somebody leave." << strSenderIp;
+			emit onUserOffline(strSenderIp);
 			break;
 		case IPMSG_GETINFO:
 			qDebug() << "TODO: got command: IPMSG_GETINFO." << strSenderIp;
@@ -156,6 +156,8 @@ void IpMsgProtocol::readPendingDatagrams()
 			userName = codec->toUnicode(tmp);
 			qDebug() << "==> " << codec->toUnicode(tmp);
 
+			emit onUserOnline(userName, strSenderIp);
+
 			break;
 		}
 		case IPMSG_SENDMSG:
@@ -167,7 +169,7 @@ void IpMsgProtocol::readPendingDatagrams()
 			m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
 
 			IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, senderPort, datagramSend);
-            emit newMsg(pPacket);
+			emit newMsg(pPacket);
 
 			break;
 		}
@@ -200,7 +202,7 @@ void IpMsgProtocol::readPendingDatagrams()
 			break;
 		}
 		}
-    }
+	}
 }
 
 

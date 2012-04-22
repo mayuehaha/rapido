@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 	win.ShowTrayIcon();
 
 	// Start the IpMsg handler thread.
-	rapido_ipmsg_thread().start();
+	//rapido_ipmsg_thread().start();
 
 	int iRet = app.exec();
 

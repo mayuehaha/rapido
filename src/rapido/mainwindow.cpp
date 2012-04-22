@@ -74,7 +74,7 @@ void MainWindow::ShowTrayIcon()
 	m_pTrayIcon->showMessage("RapidoMessenger", "Hello world...", QSystemTrayIcon::Information, 10000);
 }
 
-void MainWindow::jsLogin(const QString& strUserId, const QString& strPasswd)
+void MainWindow::login(const QString& strUserId, const QString& strPasswd)
 {
 	qDebug() << strUserId << strPasswd;
 
@@ -88,6 +88,24 @@ void MainWindow::jsLogin(const QString& strUserId, const QString& strPasswd)
 	//emit onLoginFailed("Oh, failed. [core]");
 }
 
+void MainWindow::startIpMsg(void)
+{
+	qDebug() << "startIpMsg().";
+	rapido_ipmsg_thread().setOwnerWindow(this);
+	rapido_ipmsg_thread().start();
+}
+void MainWindow::onUserOnline(const QString& strUserName, const QString& strIp)
+{
+	// let UserManager class handle this information: add the user into a list.
+
+	// finally, update the UI.
+	emit jsOnUserOnline(strUserName, strIp);
+}
+
+void MainWindow::onUserOffline(const QString& strIp)
+{
+	emit jsOnUserOffline(strIp);
+}
 
 void MainWindow::_onTrayIconEvent(QSystemTrayIcon::ActivationReason reason)
 {
@@ -106,5 +124,7 @@ void MainWindow::_onTrayIconEvent(QSystemTrayIcon::ActivationReason reason)
 
 void MainWindow::_onAddJSObject()
 {
+	// TODO: maybe I should put the UserManager instance into page for the javascript call?
+
 	page()->mainFrame()->addToJavaScriptWindowObject(QString("rCore"), this);
 }

@@ -38,7 +38,7 @@ function login()
 	// check...
 
 	//
-	rCore.jsLogin(userid, passwd);
+	rCore.login(userid, passwd);
 }
 
 // =============================================== //
@@ -54,10 +54,9 @@ function onBodyLoad()
 
 function disableSelection(target)
 {
-	if (typeof target.onselectstart!="undefined") //IE route
+	if (typeof target.onselectstart!="undefined")
 	{
 		// QtWebKit goes this way.
-		//alert('1');
 		target.onselectstart=function(){return false}
 	}
 	else if (typeof target.style.MozUserSelect!="undefined") //Firefox route

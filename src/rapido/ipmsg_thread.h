@@ -8,6 +8,7 @@
 #include "ipmsg_msg.h"
 
 class IpMsgProtocol;
+class MainWindow;
 
 /*
 IpMsgThread:
@@ -22,6 +23,7 @@ public:
 
     virtual void run(void);
 
+	void setOwnerWindow(MainWindow* pMainWindow);
     void stop_and_finalize();
 
 signals:
@@ -29,6 +31,7 @@ signals:
 public slots:
     
 private:
+	MainWindow* m_pMainWindow;
     QMutex r_lock;
     IpMsgProtocol* m_pIpMsg;
     QList<ipmsg_msg> r_sendMsgList;

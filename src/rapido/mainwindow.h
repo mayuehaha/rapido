@@ -22,10 +22,20 @@ protected:
     //IpMsgProtocol* m_pIpMsgThread;
 
 signals:
+	// login.html
 	void onLoginFailed(const QString& strReason);
+	// index.html
+	void jsOnUserOnline(const QString& strUserName, const QString& strIp);
+	void jsOnUserOffline(const QString& strIp);
 
 public slots:
-	void jsLogin(const QString& strUserId, const QString& strPasswd);
+	// login.html
+	void login(const QString& strUserId, const QString& strPasswd);
+	// index.html
+	void startIpMsg(void);
+
+	void onUserOnline(const QString& strUserName, const QString& strIp);
+	void onUserOffline(const QString& strIp);
 
 private slots:
 	void _onTrayIconEvent(QSystemTrayIcon::ActivationReason reason);

@@ -24,7 +24,9 @@ protected:
     void handleMsg(IpMsgSendPacket IpMsgPkt);
 signals:
     void newMsg(IpMsgRecvPacket *packet);
-    
+	void onUserOnline(const QString& strUserName, const QString& strIp);
+	void onUserOffline(const QString& strIp);
+
 private slots:
     void readPendingDatagrams();
 
