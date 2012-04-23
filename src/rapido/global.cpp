@@ -3,13 +3,16 @@
 
 #include "chatwindow_manager.h"
 
+IpMsgUser rapido::myself;
 ChatWindowManager* rapido::pChatWindowManager = NULL;
-
+QList<IpMsgUser> rapido::userList1;
 QList<IpMsgSendPacket> rapido::sendPacketList;
-
 
 bool rapido_intialize(void)
 {
+
+	//rapido::myself = new IpMsgUser();
+
 	if(!rapido_env().Initialize())
 		return false;
 
@@ -49,4 +52,11 @@ IpMsgThread& rapido_ipmsg_thread(void)
     return ipmsgthread;
 }
 
+
+QString toUnicode(QByteArray qarray)
+{
+	QTextCodec *codec = QTextCodec::codecForName("GBK");
+	//QByteArray tmp(cmdList.at(5).toAscii());
+	return codec->toUnicode(qarray);
+}
 

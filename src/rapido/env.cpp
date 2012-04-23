@@ -12,13 +12,16 @@ Env::Env()
 
 bool Env::Initialize(void)
 {
-	_getLoginName();
 
+
+	_getLoginName();
 
 	m_strHtmlBasePath = "file:///";
 	m_strHtmlBasePath += QApplication::applicationDirPath();
 #if defined(Q_OS_MAC)
 	m_strHtmlBasePath += "/../../../skin/";
+#elif defined(Q_OS_LINUX)
+    m_strHtmlBasePath += "/skin/";
 #else
 	m_strHtmlBasePath += "/../skin/";
 #endif
@@ -26,6 +29,8 @@ bool Env::Initialize(void)
 	if(!_getNetworkInfo())
 		return false;
 
+	rapido::myself.setName("testname");
+	rapido::myself.setGroup("testgroup");
 	return true;
 }
 
@@ -41,6 +46,8 @@ void Env::_getLoginName()
 #endif
 	if(m_strLoginName.isEmpty())
 		m_strLoginName = "UNKNOWN-USERNAME";
+	//discuss wether is attrbute of myself is neccessary
+	rapido::myself.setLoginName(m_strLoginName);
 }
 
 bool Env::_getNetworkInfo(void)
@@ -122,6 +129,9 @@ bool Env::_getNetworkInfo(void)
 	qDebug() << "MAC  : " << m_strHostMAC;
 	qDebug() << "Host : " << m_strHostName;
 
+	rapido::myself.setIp(m_hostIp);
+	rapido::myself.setMac(m_strHostMAC);
+	rapido::myself.setHost(m_strHostName);
 	return true;
 }
 
@@ -141,3 +151,5 @@ QString Env::_getEnvironmentVariable(QRegExp regExp)
 
 	return QString("");
 }
+
+

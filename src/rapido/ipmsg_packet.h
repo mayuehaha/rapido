@@ -13,7 +13,7 @@ public:
     IpMsgPacket();
 
     // create from received packet.
-	IpMsgPacket(QHostAddress senderIp, quint16 senderPort, const QString additionalInfo);
+    IpMsgPacket(QHostAddress senderIp, quint16 senderPort);
 
     virtual ~IpMsgPacket(){}
 
@@ -30,7 +30,9 @@ public:
 
 	IpMsgUser m_ipMsgUser;
 	QString m_packet;
+	//group name
 	QString m_extendedInfo;
+	//ipmsg_name
 	QString m_additionalInfo;
 	QString m_packetNoString;
 	quint32 m_flags;

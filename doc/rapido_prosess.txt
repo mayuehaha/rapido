@@ -1,0 +1,4 @@
+1、用户上线时广播：IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT信息
+2、在线用户收到其他用户广播的 IPMSG_BR_ENTRY 信息后在自己的用户列表中添加一个新用户
+并回复一个IPMSG_ANSENTRY信息。
+

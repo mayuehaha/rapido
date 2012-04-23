@@ -5,19 +5,19 @@
 
 IpMsgPacket::IpMsgPacket(){}
 
-IpMsgPacket::IpMsgPacket(QHostAddress address, quint16 port, const QString additionalInfo)
+IpMsgPacket::IpMsgPacket(QHostAddress address, quint16 port)
 {
 	m_ipAddress = address;
 	m_port = port;
-	m_additionalInfo = additionalInfo;
 }
 
 
 IpMsgSendPacket::IpMsgSendPacket(){}
 
 IpMsgSendPacket::IpMsgSendPacket(QHostAddress address, quint16 port, QString additionalInfo,
-		QString extendedInfo, quint32 flags):IpMsgPacket(address, port, additionalInfo)
+        QString extendedInfo, quint32 flags):IpMsgPacket(address, port)
 {
+    m_additionalInfo = additionalInfo;
 	m_extendedInfo = extendedInfo;
 	m_flags = flags;
 	qint64 random = qrand() % 1024;
@@ -33,9 +33,9 @@ void IpMsgSendPacket::constructPacket()
 	m_packet.append(QString("%1%2").arg(m_packetNoString)
 					.arg(R_COMMAND_SEPERATOR));
 
-    m_packet.append(rapido_env().m_strLoginName.toAscii());
+	m_packet.append(rapido::myself.getLoginName().toAscii());
 	m_packet.append(R_COMMAND_SEPERATOR);
-    m_packet.append(rapido_env().m_strHostName.toAscii());
+	m_packet.append(rapido::myself.getHost().toAscii());
 	m_packet.append(R_COMMAND_SEPERATOR);
 	m_packet.append(QString("%1%2").arg(m_flags).arg(R_COMMAND_SEPERATOR));
 	m_packet.append(m_additionalInfo);
@@ -49,8 +49,10 @@ IpMsgSendPacket::~IpMsgSendPacket()
 IpMsgRecvPacket::IpMsgRecvPacket(){}
 
 IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress senderIp, quint16 senderPort, QString packet)
-	: IpMsgPacket(senderIp, senderPort, packet)
+	: IpMsgPacket(senderIp, senderPort)
 {
+	m_packet = packet;
+	m_extendedInfo = packet.section(QChar(R_EXTEND_INFO_SEPERATOR), 1, 1);
 
 	QStringList list = packet.split(R_COMMAND_SEPERATOR);
 
@@ -59,11 +61,18 @@ IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress senderIp, quint16 senderPort, QStr
 		return;
 	}
 
-	m_extendedInfo = m_packet.section(QChar(R_IPMSG_EXTENDED_INFO_POS), 1, 1);
-//	parseAdditionalInfo();
+	//remember to add the situation of haven't the field
+	m_additionalInfo = toUnicode(list.at(R_IPMSG_ADDITION_INFO_POS).toAscii());
 
-//	m_packetNoString = list.at(MSG_PACKET_NO_POS);
-//	m_flags = list.at(MSG_FLAGS_POS).toUInt();
+    m_packetNoString = list.at(R_IPMSG_PACKET_NO_POS);
+	m_flags = list.at(R_IPMSG_FLAGS_POS).toUInt();
+
+	m_ipMsgUser.setName(m_additionalInfo);
+	m_ipMsgUser.setGroup(m_extendedInfo);
+	m_ipMsgUser.setHost(list.at(R_IPMSG_HOST_POS));
+	m_ipMsgUser.setIp(senderIp);
+	m_ipMsgUser.setLoginName(list.at(R_IPMSG_LOG_NAME_POS));
+	m_ipMsgUser.setMac("aa:aa:aa:aa:aa:aa");
 }
 
 IpMsgRecvPacket::~IpMsgRecvPacket()

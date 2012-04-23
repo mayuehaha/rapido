@@ -72,11 +72,13 @@ void MainWindow::_onTrayIconEvent(QSystemTrayIcon::ActivationReason reason)
 {
 	switch(reason)
 	{
-	case QSystemTrayIcon::Trigger:			// click
-	case QSystemTrayIcon::DoubleClick:		// double-click
-		showNormal();
-		//show();
-		//setWindowState(Qt::WindowNoState);
-		break;
+		case QSystemTrayIcon::Trigger:			// click
+		case QSystemTrayIcon::DoubleClick:		// double-click
+			showNormal();
+			//show();
+			//setWindowState(Qt::WindowNoState);
+			break;
+		default:
+			break;
 	}
 }
