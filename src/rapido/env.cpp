@@ -61,13 +61,10 @@ bool Env::_getNetworkInfo(void)
 		if(ni.hardwareAddress().isEmpty())
 			continue;
 
-		//qDebug() << ni.allAddresses();
-		//qDebug() << ni;
 		QList<QNetworkAddressEntry> naeList = ni.addressEntries();
 		if(0 == naeList.count())
 			continue;
 
-		//qDebug() << ni.hardwareAddress();
 		foreach(QNetworkAddressEntry nae, naeList)
 		{
 			strIp = nae.ip().toString();

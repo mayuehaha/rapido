@@ -6,7 +6,7 @@
 IpMsgUser rapido::myself;
 ChatWindowManager* rapido::pChatWindowManager = NULL;
 QList<IpMsgUser> rapido::userList;
-QList<IpMsgSendPacket> rapido::sendPacketList;
+QList<IpMsgSendPacket*> rapido::sendPacketList;
 QString rapido::entryMessage;
 
 bool rapido_intialize(void)
