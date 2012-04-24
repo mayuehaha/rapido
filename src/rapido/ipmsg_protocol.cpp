@@ -37,7 +37,9 @@ void IpMsgProtocol::start()
 		//return;
 	}*/
 
-	if(!m_socket.bind(rapido_env().m_hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+    //why can't get message with the first message
+    //if(!m_socket.bind(rapido_env().m_hostIp, IPMSG_DEFAULT_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+    if(!m_socket.bind(QHostAddress::Any, IPMSG_DEFAULT_PORT))
 	{
         qDebug() << "Cannot bind.";
         return;
@@ -53,15 +55,10 @@ void IpMsgProtocol::broadcastLogin()
     quint32 flags = 0;
 	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
 
-	QString entryMessage = QString("%1%2%3%4").arg(rapido::myself.getName())
-			.arg(QChar(R_EXTEND_INFO_SEPERATOR))
-			.arg(rapido::myself.getGroup())
-			.arg(QChar(R_EXTEND_INFO_SEPERATOR));
-
-	//QHostAddress::Broadcast
-	QHostAddress mytest = QHostAddress("192.168.4.29");
+    //QHostAddress mytest = QHostAddress::Broadcast;
+    QHostAddress mytest = QHostAddress("192.168.4.29");
 	IpMsgSendPacket ipMsgSendPacket(mytest, IPMSG_DEFAULT_PORT/* port */,
-					entryMessage, ""/* extendedInfo */, flags);
+                    rapido::entryMessage, ""/* extendedInfo */, flags);
 
     rapido::sendPacketList.append(ipMsgSendPacket);
     qDebug() << "broadcast:  " <<ipMsgSendPacket.m_packet;
@@ -156,10 +153,11 @@ void IpMsgProtocol::readPendingDatagrams()
 		}
 
 		QString packet = toUnicode(datagram);
-		IpMsgRecvPacket recvPacket = IpMsgRecvPacket(senderIp, senderPort, packet);
-		processRecvMsg(recvPacket);
+        qDebug() << "MsgServer::" << packet;
+        IpMsgRecvPacket recvPacket = IpMsgRecvPacket(senderIp, senderPort, packet);
+        processRecvMsg(recvPacket);
 
-		//check the return value
+        //check the return value
 //        if(recvPacket == NULL){
 //            qDebug() << "erro formate, Packet:" <<  data;
 //        }
@@ -170,23 +168,21 @@ void IpMsgProtocol::readPendingDatagrams()
 
 void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
 {
-
-	qDebug() << "MsgServer::" << IPMSG_GET_MODE(recvPacket.m_flags);
 	switch (IPMSG_GET_MODE(recvPacket.m_flags)) {
 		case IPMSG_BR_ENTRY:
 			qDebug() << "some guys entry";
-			rapido::userList1.append(recvPacket.m_ipMsgUser);
-		//	processEntryMsg(msg);
+            rapido::userList.append(recvPacket.m_ipMsgUser);
+
+           // IpMsgSendPacket sendpacket(recvPacket.ipAddress(), recvPacket.port(),rapido::entryMessage, ""/* extendedInfo */, IPMSG_ANSENTRY);
+            rapido::sendPacketList.append(IpMsgSendPacket(recvPacket.ipAddress(), recvPacket.port(),rapido::entryMessage, ""/* extendedInfo */, IPMSG_ANSENTRY));
 			break;
 
 		case IPMSG_BR_EXIT:
-			//emit newExitMsg(msg);
 			break;
 
 		case IPMSG_ANSENTRY:
 			qDebug() << "some guys answer";
-			rapido::userList1.append(recvPacket.m_ipMsgUser);
-			//emit newUserMsg(msg);
+            rapido::userList.append(recvPacket.m_ipMsgUser);
 			break;
 	}
 

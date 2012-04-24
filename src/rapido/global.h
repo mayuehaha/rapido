@@ -25,8 +25,9 @@ namespace rapido
 {
 	extern ChatWindowManager* pChatWindowManager;
 	extern IpMsgUser myself;
-	extern QList<IpMsgUser> userList1;
+    extern QList<IpMsgUser> userList;
 	extern QList<IpMsgSendPacket> sendPacketList;
+    extern QString entryMessage;
 }
 
 
