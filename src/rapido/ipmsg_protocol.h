@@ -25,12 +25,14 @@ protected:
     void processRecvMsg(IpMsgRecvPacket recvPacket);
 signals:
     void newMsg(IpMsgRecvPacket *packet);
-    
+	void onUserOnline(const QString& strUserName, const QString& strIp);
+	void onUserOffline(const QString& strIp);
+
 private slots:
     void readPendingDatagrams();
 
-public	 slots:
-    void processSendMsg();
+public slots:
+	void processSendMsg();	// this slot will be connect with a timer.
 };
 
 #endif // IPMSGPROTOCOL_H

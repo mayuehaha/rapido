@@ -9,7 +9,28 @@ body, a, p, td, li, input, textarea {
 
 body {
 	background:url(images/bg.png) repeat left top;
-	padding:20px;
+	/*padding:20px;*/
+}
+
+div.logo {
+	width:100%;
+	height:128px;
+	margin:20px 0 20px 0;
+	background:url(images/login_logo.png) no-repeat center top;
+}
+
+#footer {
+	width:100%;
+	clear:both;
+	/*height:50px;*/
+	/*background-color: #313f58;*/
+	background:url(images/login_extra_bg.png) repeat left top;
+	color:#666;
+	bottom:0;
+	position: absolute;
+}
+#footer_inner {
+	padding:10px;
 }
 
 .login_logo {
@@ -37,303 +58,32 @@ body {
 	width:180px;
 	font: 13px Monaco, "Bitstream Vera Sans Mono", Consolas, "Courier New", Courier, Fixedsys;
 }
-.login_button {
-	width:100px;
-	height:32px;
-	margin-top:20px;
-	color:#000;
-	font-family: "微软雅黑", Verdana, Tahoma, Arial, Calibri, Helvetica, Sans-Serif;
-	color: #000;
-	font-size:13px;
-	font-weight:bold;
-}
 
 img.login_icon {
 	vertical-align:middle;
 	padding-right:5px;
 }
 
-table.plain {
-	border-left:1px solid #999999;
-	border-top:1px solid #999999;
-}
-th.plain {
-	background-color: #dedede;
-	border-right:1px solid #999999;
-	border-bottom:1px solid #999999;
-}
-td.plain {
-	border-right:1px solid #999999;
-	border-bottom:1px solid #999999;
-}
-/*
-input, textarea, select {
-	font: 11px Monaco, "Bitstream Vera Sans Mono", Consolas, "Courier New", Courier, Fixedsys;
-}
-*/
-a:link		{ color:#e6621a;text-decoration:underline; }
-a:visited	{ color:#7a340e;text-decoration:none; }
-a:hover	{ color:#0c88dc;text-decoration:underline; }
-hr {
-	padding: 0;
-	margin: 1px 0 1px 0;
-	height: 1px;
-	color: #aaa;
-	border-width: 0 0 1px 0;
-	border-bottom:1px solid #D9D9D9;
-	border-style: dashed;
-	clear: both;
-}
-
-/* 文字内容样式 */
-h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p {
-	font-family: "微软雅黑", Verdana, Tahoma, Arial, Calibri, Helvetica, Sans-Serif;
-	color: #fff;
-}
-h1, h1 a, .h1 { font-size:21px; color:#0c88dc; font-weight:normal; margin:21px 0px 15px 0px;}
-h1 a:link, h1 a:visited { text-decoration:none; color:#0c88dc; }
-h1 a:hover	{ text-decoration:underline; color:#e6621a;}
-
-h2, h2 a, .h2 { font-size:18px; color:#0c88dc; font-weight:normal; margin:18px 0px 12px 0px;}
-h2 a:link, h2 a:visited { text-decoration:none; color:#0c88dc; }
-h2 a:hover	{ text-decoration:underline; color:#e6621a;}
-
-h3, h3 a, .h3 { font-size:14px; color:#0c88dc; font-weight:normal; margin:15px 0px 10px 0px;}
-h3 a:link, h3 a:visited { text-decoration:none; color:#0c88dc; }
-h3 a:hover	{ text-decoration:underline; color:#e6621a;}
-
-h4, h4 a, .h4 { font-size:13px; color:#333; font-weight:normal; margin:6px 0px 4px 0px;}
-h4 a:link, h4 a:visited { text-decoration:underline; color:#333; }
-h4 a:hover	{ text-decoration:underline; color:#0c88dc;}
-
-h5, h5 a, .h5 { font-size:12px; line-height: 18px; color:#5e5e5e; font-weight:normal; margin:8px 0px 6px 0px;}
-h5 a:link, h5 a:visited { text-decoration:underline; color:#5e5e5e; }
-h5 a:hover	{ text-decoration:underline; color:#0c88dc;}
-
-h6, h6 a, .h6 { font-size:10px; color:#999; font-weight:normal; margin:6px 0px 5px 0px;}
-h6 a:link, h6 a:visited { text-decoration:none; color:#999; }
-h6 a:hover	{ text-decoration:underline; color:#0c88dc;}
-
-ul {
-	list-style-position:outside;
-	list-style:none;
-	margin: 0;
-	padding: 0;
-}
-ul li {
-	margin: 5px 0 5px 0;
-	padding:5px 0 0 4px;
-	font-size:13px; color:#0c88dc; font-weight:normal;
-	list-style-image: none;
-}
-
-ul ul {
-	list-style-position:outside;
-	list-style:none;
-	margin: 0; padding: 0;
-}
-ul ul li {
-	margin: 3px 0px 3px 8px;
-	padding:0px 0 0 8px;
-	font-size:12px; line-height: 18px; color:#5e5e5e; font-weight:normal;
-	list-style-image: none;
-	background:url(images/page/arrow_right_notice.gif) no-repeat left 5px;
-}
-
-ul ul ul{
-	list-style-position:outside;
-	list-style:none;
-	margin: 0; padding: 0;
-}
-ul ul ul li {
-	margin:2px 0px 2px 16px;
-	padding:0px 0 0 8px;
-	font-size:12px; color:#333; font-weight:normal;
-	list-style-image: none;
-	background:url(images/page/arrow_right_normal.gif) no-repeat left 5px;
-}
-
-.text_readmore {
-	display:none;
-}
-.text_readmore_tag {
-	float:right;
-}
-
-td.specification {
-	padding-top:8px;
-	padding-bottom:6px;
-	color:#5e5e5e;
-	border-bottom: 1px solid #dedede;
-}
-.page_out_div {
-	margin:0; padding:0;
-	height:25px;
-}
-.text_span_page {
-	margin:3px; padding:0;
-	height:20px;width:20px;
-	line-height:20px;
-	border:1px solid #cccccc;
-	text-align: center;
-	float:left;
-	background-color:#ffffff;
-}
-.text_span_page_active {
-	margin:3px; padding:0;
-	height:20px;width:20px;
-	line-height:20px;
-	border:1px solid #cccccc;
-	text-align: center;
-	float:left;
-	background-color:#ededed;
-}
-.text_span_page  a:link, .text_span_page  a:visited {
-	text-decoration:none;
-	color:#666;
-}
-.text_span_page a:hover {
-	text-decoration:none;
-	color:#e6621a;
-}
-/*
-.module_text ul li ul li, .module_text ul ul li {
-	margin-left:10px;
-	padding:0px 0px 0px 8px;
-	list-style-image: none;
-	background:url(images/page/arrow_right_normal.gif) no-repeat left 5px;
-}
-ul li ul li a:link    { color:#999;text-decoration:none; }
-ul li ul li a:visited { color:#999;text-decoration:none; }
-ul li ul li a:hover   { color:#e6621a;text-decoration:underline; }
-
-
-ol, ol ol, ul ol {
-	margin: 0;
-	padding: 1px 0 2px 0;
-}
-ol li {
-	margin:0;
-	padding:2px 0 0 8px;
-	font:12px Calibri, Tahoma, Verdana, Arial, Helvetica, Sans-Serif;
-}
-ol li a:link    { color:#e6621a;text-decoration:none; }
-ol li a:visited { color:#e6621a;text-decoration:none; }
-ol li a:hover   { color:#e6621a;text-decoration:underline; }
-ol li ol li {
-	margin:0;
-	padding:0px 0 0px 8px;
-}
-ol li ol li a:link    { color:#999;text-decoration:none; }
-ol li ol li a:visited { color:#999;text-decoration:none; }
-ol li ol li a:hover   { color:#e6621a;text-decoration:underline; }
-*/
-
-
-/* 便于使用的快速样式 */
-.right {text-align:right;}
-.center {text-align:center;}
-.bold {font-weight:bold;}
-.big {font-size:120%;}
-.gray { color: #999;}
-.notice { color:#bf381c;/* font-weight:bold;*/}
-code, .code, pre { font-family:Monaco, Consolas, "Courier New", Courier, Fixedsys; padding:0; margin:0;
-border:1px solid #cccccc;
-white-space: pre-wrap;
-word-wrap: break-word;
-width:560px;
-}
-img.v_center{vertical-align:middle;}
-.must_fill {color:#E64F06;font-weight:bold;}
-.ajax_loading {
+a.login_button {
 	display:inline-block;
-	width:16px;
-	height:16px;
-	background: url(images/ajax_loading_01.gif) no-repeat left top;
-	margin:auto;
+	width:128px;
+	height:42px;
+	margin:20px 0 20px 0;
+	background:url(images/btn_login_normal.png) no-repeat left top;
 }
 
-/* 正文内的引用 */
-div.quotation {
-	padding:15px 0 0 20px;
-	background:url(images/comment_bg.png) no-repeat left top;
+a.link_adduser, a.link_forget {
+	line-height:20px;
+	text-decoration:none;
+	padding-left:20px;
 }
-div.quotation > p { font:italic 13px "Times New Roman"; }
-div.quotation > p.quoted_from {
-	padding-right:10px;
-	text-align:right;
+
+a.link_adduser {
+	background:url(images/icon_add.png) no-repeat left top;
+}
+a.link_forget {
+	background:url(images/icon_forget_password.png) no-repeat left top;
 }
 
 
-/* 页面内部的文章相关 */
-/* 栏目标题 */
-div.box_tag_by_catalog {
-	background-color:#0c88dc;
-	border:1px solid #0c88dc;
-	padding:0px 5px 0 5px;
-	margin:15px 0 10px 0;
-	width:70%;
-}
 
-div.box_tag {
-	background-color:#0c88dc;
-	border:1px solid #0c88dc;
-	padding:0px 5px 0 5px;
-	margin:15px 0 10px 0;
-}
-
-p.box_tag, a.box_tag:link, a.box_tag:visited {
-	color: #ffffff;
-	font-weight:bold;
-	padding:5px 0 5px 0;
-	text-decoration: none;
-}
-a.box_tag:hover {
-	text-decoration: underline;
-	color: #e6621a;
-}
-.MoudlePostion{
-	/*background-color:#FFFFFF;*/
-}
-
-table.product_specification {
-	border-top: 1px solid #C1DAD7;
-	border-left: 1px solid #C1DAD7;
-	width:100%;
-}
-th.product_specification {
-	font: bold 11px Verdana, Tahoma, Arial, Helvetica, Sans-Serif;
-	border-right: 1px solid #C1DAD7;
-	border-bottom: 1px solid #C1DAD7;
-	letter-spacing: 2px;
-	text-align:center;
-	padding: 5px;
-	color: #4f6b72;
-	background: #CAE8EA ;
-}
-td.product_specification {
-	border-right: 1px solid #C1DAD7;
-	border-bottom: 1px solid #C1DAD7;
-	background: #fff;
-	font-size:12px;
-	padding: 4px;
-	color: #4f6b72;
-}
-td.product_specification_alt {
-	border-right: 1px solid #C1DAD7;
-	border-bottom: 1px solid #C1DAD7;
-	background: #fff;
-	font-size:12px;
-	padding: 4px;
-	background: #F5FAFA;
-	color: #797268;
-	background:#ecf6fc;
-}
-
-div.help_tip {
-	border: 1px solid #FFC30E;
-	padding: 5px;
-	background-color: #FFFBB8;
-	text-align: left;
-	color: #9C7600;
-}

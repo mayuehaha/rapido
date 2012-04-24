@@ -1,6 +1,8 @@
 #include "ipmsg_thread.h"
 #include "ipmsg_protocol.h"
+#include "mainwindow.h"
 #include "chatwindow_manager.h"
+
 
 #include "global.h"
 
@@ -8,6 +10,7 @@ IpMsgThread::IpMsgThread(QObject *parent) :
 	QThread(parent)
 {
 	m_pIpMsg = NULL;
+	m_pMainWindow = NULL;
 }
 
 IpMsgThread::~IpMsgThread()
@@ -15,6 +18,11 @@ IpMsgThread::~IpMsgThread()
 	//exit(0);
 	//wait();
 	stop_and_finalize();
+}
+
+void IpMsgThread::setOwnerWindow(MainWindow* pMainWindow)
+{
+	m_pMainWindow = pMainWindow;
 }
 
 void IpMsgThread::stop_and_finalize(void)
@@ -35,6 +43,8 @@ void IpMsgThread::run(void)
 	connect(&timer, SIGNAL(timeout()), m_pIpMsg, SLOT(processSendMsg()));
 
 	connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
+	connect(m_pIpMsg, SIGNAL(onUserOnline(QString,QString)), m_pMainWindow, SLOT(onUserOnline(QString,QString)));
+	connect(m_pIpMsg, SIGNAL(onUserOffline(QString)), m_pMainWindow, SLOT(onUserOffline(QString)));
 
 	m_pIpMsg->start();
 

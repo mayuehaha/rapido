@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>images/rapido.png</file>
+        <file>images/tray_icon.png</file>
+        <file>images/runing_icon.png</file>
     </qresource>
 </RCC>
