@@ -173,7 +173,6 @@ void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
                                                            rapido::entryMessage, "", IPMSG_ANSENTRY);
             anserPacket->send();
 			break;
-
         }
 		case IPMSG_BR_EXIT:
 			break;
@@ -188,15 +187,14 @@ void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
 
         case IPMSG_SENDMSG:
         {
-            qDebug() << "some guys sendmsg";
-            qDebug()<< recvPacket.getPacket();
-            qDebug()<< recvPacket.getIpAddress()<<":"<<recvPacket.getPort()<<":"<<recvPacket.getPacketNoString();
-           // if (IPMSG_GET_MODE(recvPacket.getFlags()) & IPMSG_SENDCHECKOPT) {
-                IpMsgSendPacket *anserPacket1 = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),recvPacket.getPacketNoString(), "",  IPMSG_RECVMSG);
-                anserPacket1->send();
-           // }
+            if (IPMSG_GET_OPT(recvPacket.getFlags()) & IPMSG_SENDCHECKOPT) {
+                IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),recvPacket.getPacketNoString(), "",  IPMSG_RECVMSG);
+                checkOptPacket->send();
+            }
 
-
+            IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),
+                                                   recvPacket.getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
+            rebackTest->send();
 //            // If sender is not in our user list, add it.
 //            if (!Global::userManager->contains(msg->ip())) {
 //                emit newUserMsg(msg);
