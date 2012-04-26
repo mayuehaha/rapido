@@ -4,57 +4,55 @@
 #include <QHostAddress>
 
 
-
 class IpMsgUser
 {
 public:
 
     IpMsgUser();
-    IpMsgUser(QString packet, QHostAddress address, quint16 port);
+
+	void setName(QString name) { ipmsgName = name; }
+	QString getName() const { return ipmsgName; }
+
+	void setLoginName(QString login_name) { loginName = login_name; }
+	QString getLoginName() const { return loginName; }
+
+	void setGroup(QString group) { groupName = group; }
+	QString getGroup() const { return groupName; }
+
+	void setHost(QString host) { hostName = host; }
+	QString getHost() const { return hostName; }
+
+	void setIp(QHostAddress ip) { ipAddress = ip; }
+	QString getIp() const { return ipAddress.toString(); }
+
+	void setMac(QString mac) { macAddress = mac; }
+	QString getMac() const { return macAddress; }
+
+//	void setDisplayLevel(QString displayLevel) {
+//		m_displayLevel = displayLevel;
+//	}
+//	QString displayLevel() const { return m_displayLevel; }
+
 
     ~IpMsgUser();
 
-    void setName(QString name) { myName = name; }
-    QString getName() const { return myName; }
-
-    void setGroup(QString group) { myGroup = group; }
-    QString getGroup() const { return myGroup; }
-
-    void setLoginName(QString loginName) { myLoginName = loginName; }
-    QString getLoginName() const { return myLoginName; }
-
-    void setHost(QString host) { myHost = host; }
-    QString getHost() const { return myHost; }
-
-    QString ip() const { return myIpAddress.toString(); }
-
-    void setDisplayLevel(QString displayLevel) {
-        myDisplayLevel = displayLevel;
-    }
-    QString displayLevel() const { return myDisplayLevel; }
-	void initIpMsgUser(QString &packet);
-
 private:
-    // Get group name or absence string
-    QString parseAdditionalInfo(QString &packet);
-
-
 
     //user name
-    QString myName;
+	QString ipmsgName;
     //computer login name
-    QString myLoginName;
+	QString loginName;
     //group name
-    QString myGroup;
+	QString groupName;
     //computer host name
-    QString myHost;
+	QString hostName;
     //ip address
-    QHostAddress myIpAddress;
+	QHostAddress ipAddress;
     //compyter mac
-    QString myMac;
+	QString macAddress;
 
-    quint16 myPort;
-    QString myDisplayLevel;
+	quint16 listeningPort;
+	QString displayLevel;
 
 };
 

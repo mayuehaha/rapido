@@ -4,15 +4,9 @@
 #include <QThread>
 #include <QMutex>
 
-
-#include "ipmsg_msg.h"
-
 class IpMsgProtocol;
 class MainWindow;
 
-/*
-IpMsgThread:
-*/
 class IpMsgThread : public QThread
 {
     Q_OBJECT
@@ -34,7 +28,6 @@ private:
 	MainWindow* m_pMainWindow;
     QMutex r_lock;
     IpMsgProtocol* m_pIpMsg;
-    QList<ipmsg_msg> r_sendMsgList;
 };
 
 #endif // IPMSG_THREAD_H

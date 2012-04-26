@@ -51,7 +51,8 @@ Some define.
 
 
 /*  header  */
-#define IPMSG_VERSION           0x0001
+//#define IPMSG_VERSION           "1_lbt2_52#128#14FEB5EEC5A3#0#0#0"
+#define IPMSG_VERSION           "1"
 #define IPMSG_DEFAULT_PORT      0x0979
 
 /*  command  */

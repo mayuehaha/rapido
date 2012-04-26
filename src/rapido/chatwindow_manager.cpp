@@ -14,7 +14,7 @@ ChatWindowManager::~ChatWindowManager()
 void ChatWindowManager::newMsg(IpMsgRecvPacket *packet)
 {
 	// find the chat window by sender ip. If not found, create one.
-	IpMsgChatWindows::iterator it = m_IpMsgChatWindows.find(packet->ip());
+    IpMsgChatWindows::iterator it = m_IpMsgChatWindows.find(packet->getIp());
 	if(m_IpMsgChatWindows.end() != it)
 	{
 		it.value()->show();
@@ -22,7 +22,7 @@ void ChatWindowManager::newMsg(IpMsgRecvPacket *packet)
 	else
 	{
 		ChatWindow* pChatWin = new ChatWindow;
-		m_IpMsgChatWindows.insert(packet->ip(), pChatWin);
+        m_IpMsgChatWindows.insert(packet->getIp(), pChatWin);
 		pChatWin->show();
 	}
 

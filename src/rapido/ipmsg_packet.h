@@ -13,38 +13,59 @@ public:
     IpMsgPacket();
 
     // create from received packet.
-	IpMsgPacket(QHostAddress senderIp, quint16 senderPort, const QString additionalInfo);
+    IpMsgPacket(QHostAddress senderIp, quint16 senderPort);
 
     virtual ~IpMsgPacket(){}
 
+    //Is activity of virtual the same as java(live the vitual method implement by sun class)?
+    virtual QString getIp(void) const { return ipAddress.toString(); }
+    virtual QHostAddress getIpAddress(void) const { return ipAddress; }
 
-	virtual QString ip(void) const { return m_ipAddress.toString(); }
-	virtual QHostAddress ipAddress(void) const { return m_ipAddress; }
-	virtual quint16 port(void) const { return m_port; }
+    virtual quint16 getPort(void) const { return port; }
 
+    void setPacketUser(IpMsgUser packet_user) { packetUser = packet_user; }
+    IpMsgUser getPacketUser() const { return packetUser; }
 
-public:
-    QHostAddress m_ipAddress;
-	quint16 m_port;
-	QString m_strContent;
+    void setPacket(QString packet) { this->packet = packet; }
+    QString getPacket() const { return this->packet; }
 
-	IpMsgUser m_ipMsgUser;
-	QString m_packet;
-	QString m_extendedInfo;
-	QString m_additionalInfo;
-	QString m_packetNoString;
-	quint32 m_flags;
+    void setExtendedInfo(QString extended_info) { extendedInfo = extended_info; }
+    QString getExtendedInfo() const { return extendedInfo; }
+
+    void setAdditionalInfo(QString additional_info) { additionalInfo = additional_info; }
+    QString getAdditionalInfo() const { return additionalInfo; }
+
+    void setPacketNoString(QString packetNo_string) { packetNoString = packetNo_string; }
+    QString getPacketNoString() const { return packetNoString; }
+
+    void setFlags(quint32 flag) { flags = flag; }
+    quint32 getFlags() const { return flags; }
+
+protected:
+    QHostAddress ipAddress;
+    quint16 port;
+
+    IpMsgUser packetUser;
+    QString packet;
+	//group name
+    QString extendedInfo;
+	//ipmsg_name
+    QString additionalInfo;
+    QString packetNoString;
+    quint32 flags;
 };
 
 class IpMsgSendPacket : public IpMsgPacket
 {
 public:
     IpMsgSendPacket();
-	void constructPacket();
 	IpMsgSendPacket(QHostAddress address, quint16 port, QString additionalInfo,
 		QString extendedInfo, quint32 flags);
+    void send();
 	//IpMsgSendPacket():MsgBase(packet, address, port)
     ~IpMsgSendPacket();
+private:
+    void constructPacket();
 };
 
 class IpMsgRecvPacket : public IpMsgPacket

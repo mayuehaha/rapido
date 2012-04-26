@@ -4,6 +4,7 @@
 #include <QRegExp>
 #include <QNetworkInterface>
 #include <QHostInfo>
+#include <QByteArray>
 
 class Env
 {
@@ -16,6 +17,7 @@ protected:
 	bool _getNetworkInfo(void);
 	void _getLoginName(void);
 	QString _getEnvironmentVariable(QRegExp regExp);
+
 
 public:
 	QHostAddress m_hostIp;

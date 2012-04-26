@@ -76,7 +76,7 @@ void MainWindow::ShowTrayIcon()
 
 void MainWindow::login(const QString& strUserId, const QString& strPasswd)
 {
-	qDebug() << strUserId << strPasswd;
+    qDebug() << strUserId << strPasswd;
 
 	QString strUrl = rapido_env().m_strHtmlBasePath;
 	strUrl += "index.html";
@@ -90,7 +90,7 @@ void MainWindow::login(const QString& strUserId, const QString& strPasswd)
 
 void MainWindow::startIpMsg(void)
 {
-	qDebug() << "startIpMsg().";
+    //qDebug() << "startIpMsg().";
 	rapido_ipmsg_thread().setOwnerWindow(this);
 	rapido_ipmsg_thread().start();
 }
@@ -111,14 +111,14 @@ void MainWindow::_onTrayIconEvent(QSystemTrayIcon::ActivationReason reason)
 {
 	switch(reason)
 	{
-	case QSystemTrayIcon::Trigger:			// click
-	case QSystemTrayIcon::DoubleClick:		// double-click
-		showNormal();
-		//show();
-		//setWindowState(Qt::WindowNoState);
-		break;
-	default:
-		break;
+		case QSystemTrayIcon::Trigger:			// click
+		case QSystemTrayIcon::DoubleClick:		// double-click
+			showNormal();
+			//show();
+			//setWindowState(Qt::WindowNoState);
+			break;
+		default:
+			break; 
 	}
 }
 
