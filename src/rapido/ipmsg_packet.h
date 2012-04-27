@@ -11,7 +11,6 @@ class IpMsgPacket
 {
 public:
     IpMsgPacket();
-
     // create from received packet.
     IpMsgPacket(QHostAddress senderIp, quint16 senderPort);
 
@@ -62,7 +61,6 @@ public:
 	IpMsgSendPacket(QHostAddress address, quint16 port, QString additionalInfo,
 		QString extendedInfo, quint32 flags);
     void send();
-	//IpMsgSendPacket():MsgBase(packet, address, port)
     ~IpMsgSendPacket();
 private:
     void constructPacket();

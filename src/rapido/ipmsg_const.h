@@ -29,7 +29,12 @@ Some define.
 #define R_FILE_NAME_BEFORE        "::"
 #define R_FILE_NAME_AFTER         ":"
 
-
+//user status
+#define R_USERSTATUS_ONLINE             0
+#define R_USERSTATUS_OFFLINE            1
+#define R_USERSTATUS_BUSY               2
+#define R_USERSTATUS_LEAVE              3
+#define R_USERSTATUS_CREAZING           4
 
 
 /*

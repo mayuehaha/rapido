@@ -3,6 +3,7 @@
 
 #include <QHostAddress>
 
+#include "chatwindow.h"
 
 class IpMsgUser
 {
@@ -50,6 +51,9 @@ private:
 	QHostAddress ipAddress;
     //compyter mac
 	QString macAddress;
+
+    quint8 status;
+    ChatWindow* pChatWin;
 
 	quint16 listeningPort;
 	QString displayLevel;

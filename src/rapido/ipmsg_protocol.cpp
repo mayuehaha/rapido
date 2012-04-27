@@ -158,7 +158,6 @@ void IpMsgProtocol::readPendingDatagrams()
 //        if(recvPacket == NULL){
 //            qDebug() << "erro formate, Packet:" <<  data;
 //        }
-
     }
 }
 
