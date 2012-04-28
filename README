@@ -1,3 +1,6 @@
+Rapido，全称为RapidoMessenger，初始目标为取代IpMsg及FeiQ，成为局域网上的及时通讯工具。
+
+Rapido使用Qt框架来支持跨平台编译，使用QtWebKit作为用户界面呈现。
 
 RapidoMSG
   Yet another IpMsg based on Qt and use QtWebKit for UI.
