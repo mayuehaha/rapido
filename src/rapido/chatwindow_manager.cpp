@@ -26,7 +26,7 @@ void ChatWindowManager::newMsg(IpMsgRecvPacket *packet)
 		pChatWin->show();
 	}
 
-	delete packet;
+	//delete packet;
 
 }
 

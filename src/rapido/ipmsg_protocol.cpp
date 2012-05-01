@@ -7,13 +7,14 @@
 #include <QDebug>
 
 #include "global.h"
+#include "ipmsg_const.h"
 #include "ipmsg_packet.h"
 
 /*
 command:
   1:123:apex:APEXPC:1:ApexLiu
 format:
-  unknown : packet-number : login-name : computer-name (or host-name) : command : user-name
+  packet-version : packet-number : login-name : computer-name (or host-name) : command : user-name
 */
 
 IpMsgProtocol::IpMsgProtocol(QObject *parent)
@@ -55,7 +56,7 @@ void IpMsgProtocol::broadcastLogin()
 	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
 
     //QHostAddress mytest = QHostAddress::Broadcast;
-    QHostAddress mytest = QHostAddress("192.168.4.29");
+	QHostAddress mytest = QHostAddress(rapido_env().m_hostIp.toString());
     IpMsgSendPacket *broadcast = new IpMsgSendPacket(mytest, IPMSG_DEFAULT_PORT, rapido::entryMessage, "", flags);
     broadcast->send();
 }
@@ -69,7 +70,7 @@ void IpMsgProtocol::processSendMsg()
 }
 
 //can it be run without trouble with the object not the point
-void IpMsgProtocol::handleMsg(IpMsgSendPacket *send_packet)
+void IpMsgProtocol::handleMsg(const IpMsgSendPacket* send_packet)
 {
     qDebug()<< send_packet->getIp() << ":" <<send_packet->getPort() << ":" <<send_packet->getPacket();
     m_socket.writeDatagram(send_packet->getPacket().toLocal8Bit().data(), send_packet->getPacket().size(),
@@ -151,8 +152,8 @@ void IpMsgProtocol::readPendingDatagrams()
 
 		QString packet = toUnicode(datagram);
         qDebug() << "resive:" << packet;
-        IpMsgRecvPacket recvPacket = IpMsgRecvPacket(senderIp, senderPort, packet);
-        processRecvMsg(recvPacket);
+		IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, senderPort, packet);
+		processRecvMsg(pPacket);
 
         //check the return value
 //        if(recvPacket == NULL){
@@ -162,23 +163,23 @@ void IpMsgProtocol::readPendingDatagrams()
     }
 }
 
-void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
+void IpMsgProtocol::processRecvMsg(const IpMsgRecvPacket* recvPacket)
 {
 
-    switch (IPMSG_GET_MODE(recvPacket.getFlags())) {
+	switch (IPMSG_GET_MODE(recvPacket->getFlags())) {
         case IPMSG_BR_ENTRY:
         {
-            rapido::userList.append(recvPacket.getPacketUser());
-            IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),
-                                                           rapido::entryMessage, "", IPMSG_ANSENTRY);
-            anserPacket->send();
+			rapido::userList.append(recvPacket->getPacketUser());
+			IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
+															   rapido::entryMessage, "", IPMSG_ANSENTRY);
+			anserPacket->send();
 			break;
         }
 		case IPMSG_BR_EXIT:
 			break;
 
 		case IPMSG_ANSENTRY:
-            rapido::userList.append(recvPacket.getPacketUser());
+			rapido::userList.append(recvPacket->getPacketUser());
 			break;
 
         case IPMSG_BR_ABSENCE:
@@ -187,13 +188,13 @@ void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
 
         case IPMSG_SENDMSG:
         {
-            if (IPMSG_GET_OPT(recvPacket.getFlags()) & IPMSG_SENDCHECKOPT) {
-                IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),recvPacket.getPacketNoString(), "",  IPMSG_RECVMSG);
+			if (IPMSG_GET_OPT(recvPacket->getFlags()) & IPMSG_SENDCHECKOPT) {
+				IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),recvPacket->getPacketNoString(), "",  IPMSG_RECVMSG);
                 checkOptPacket->send();
             }
 
-            IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),
-                                                   recvPacket.getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
+			IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
+												   recvPacket->getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
             rebackTest->send();
 //            // If sender is not in our user list, add it.
 //            if (!Global::userManager->contains(msg->ip())) {

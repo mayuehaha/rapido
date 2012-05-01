@@ -10,7 +10,7 @@
 
 //class IpMsgThread;
 
-bool rapido_intialize(void);
+bool rapido_initialize(void);
 // global finalize, should be call only once at main() when program exit.
 void rapido_finalize(void);
 

@@ -38,17 +38,17 @@ public:
 
 private:
 
-    //user name
+	// user name
 	QString ipmsgName;
-    //computer login name
+	// computer login name
 	QString loginName;
-    //group name
+	// group name
 	QString groupName;
-    //computer host name
+	// computer host name
 	QString hostName;
-    //ip address
+	// ip address
 	QHostAddress ipAddress;
-    //compyter mac
+	// computer mac
 	QString macAddress;
 
 	quint16 listeningPort;

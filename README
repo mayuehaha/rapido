@@ -28,6 +28,6 @@ RapidoMSG
 =============================================================
 folder tree
 
-  \           project root.
+  \          project root.
   |-- doc    documents.
   |-- src    source projects.

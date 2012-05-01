@@ -1,10 +1,11 @@
 #include "ipmsg_thread.h"
+#include "global.h"
+#include "ipmsg_const.h"
+
 #include "ipmsg_protocol.h"
 #include "mainwindow.h"
 #include "chatwindow_manager.h"
 
-
-#include "global.h"
 
 IpMsgThread::IpMsgThread(QObject *parent) :
 	QThread(parent)

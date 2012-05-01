@@ -1,4 +1,5 @@
 #include "global.h"
+#include "ipmsg_const.h"
 #include "ipmsg_thread.h"
 
 #include "chatwindow_manager.h"
@@ -9,7 +10,7 @@ QList<IpMsgUser> rapido::userList;
 QList<IpMsgSendPacket*> rapido::sendPacketList;
 QString rapido::entryMessage;
 
-bool rapido_intialize(void)
+bool rapido_initialize(void)
 {
 
 	//rapido::myself = new IpMsgUser();

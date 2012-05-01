@@ -1,12 +1,13 @@
 #ifndef IPMSGPROTOCOL_H
 #define IPMSGPROTOCOL_H
 
-#include "ipmsg_const.h"
 #include "ipmsg_db.h"
-#include "ipmsg_packet.h"
 
 #include <QObject>
 #include <QUdpSocket>
+
+class IpMsgSendPacket;
+class IpMsgRecvPacket;
 
 class IpMsgProtocol : public QObject
 {
@@ -21,10 +22,10 @@ protected:
 	IpMsgDB m_db;
     qint32 m_packetNo;
 	void broadcastLogin();
-    void handleMsg(IpMsgSendPacket *send_packet);
-    void processRecvMsg(IpMsgRecvPacket recvPacket);
+	void handleMsg(const IpMsgSendPacket* send_packet);
+	void processRecvMsg(const IpMsgRecvPacket* recvPacket);
 signals:
-    void newMsg(IpMsgRecvPacket *packet);
+	void newMsg(IpMsgRecvPacket* packet);
 	void onUserOnline(const QString& strUserName, const QString& strIp);
 	void onUserOffline(const QString& strIp);
 

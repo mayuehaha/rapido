@@ -88,7 +88,7 @@ void MainWindow::login(const QString& strUserId, const QString& strPasswd)
 	//emit onLoginFailed("Oh, failed. [core]");
 }
 
-void MainWindow::startIpMsg(void)
+void MainWindow::startIpMsgThread(void)
 {
     //qDebug() << "startIpMsg().";
 	rapido_ipmsg_thread().setOwnerWindow(this);
