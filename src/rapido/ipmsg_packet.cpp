@@ -99,12 +99,12 @@ IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress ip, quint16 port, QString packet)
     this->packetNoString = list.at(R_IPMSG_PACKET_NO_POS);
     this->m_flags = list.at(R_IPMSG_FLAGS_POS).toUInt();
 
-    this->packetUser.setName(this->additionalInfo);
-    this->packetUser.setGroup(this->extendedInfo);
+	this->packetUser.NickName(this->additionalInfo);
+	this->packetUser.GroupName(this->extendedInfo);
     this->packetUser.setHost(list.at(R_IPMSG_HOST_POS));
 	this->packetUser.setIp(ip);
     this->packetUser.setLoginName(list.at(R_IPMSG_LOG_NAME_POS));
-    this->packetUser.setMac("aa:aa:aa:aa:aa:aa");
+	//this->packetUser.setMac("aa:aa:aa:aa:aa:aa");
 }
 
 IpMsgRecvPacket::~IpMsgRecvPacket()

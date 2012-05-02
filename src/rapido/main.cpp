@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "global.h"
 
+// 测试一下使用引用计数来管理一个对象的自我释放
 class a
 {
 public:
@@ -76,10 +77,11 @@ int main(int argc, char* argv[])
 
 	win.show();
 
-	// System tray icon
+	// 系统托盘图标，各个平台（Win/Linux/Mac）均支持
 	win.InitTrayIcon();
 	win.ShowTrayIcon();
 
+	// 不用在程序启动时就启动IpMsg监听线程，而是等到登录之后再启动。
 	// Start the IpMsg handler thread.
 	//rapido_ipmsg_thread().start();
 

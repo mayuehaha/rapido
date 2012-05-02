@@ -1,7 +1,13 @@
+/**
+@file ipmsg_packet.h
+@brief 对 IpMsg 格式的消息报文的封装类
+*/
+
 #ifndef IPMSG_PACKET_H
 #define IPMSG_PACKET_H
 
 #include <QHostAddress>
+#include <QMutex>
 
 #include "ipmsg_user.h"
 
@@ -80,5 +86,7 @@ public:
 	//IpMsgRecvPacket();
 	IpMsgRecvPacket(QHostAddress ip, quint16 port, QString datagram);
 };
+
+
 
 #endif // IPMSG_PACKET_H

@@ -47,10 +47,10 @@ void IpMsgProtocol::start()
     }
 
     // broadcast that I'm online. :)
-    broadcastLogin();
+	_broadcastOnlineMessage();
 }
 
-void IpMsgProtocol::broadcastLogin()
+void IpMsgProtocol::_broadcastOnlineMessage()
 {
     quint32 flags = 0;
 	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
@@ -143,17 +143,21 @@ void IpMsgProtocol::readPendingDatagrams()
 		if(-1 == m_socket.readDatagram(datagram.data(), datagram.size(), &senderIp, &senderPort))
             continue;
 
-		// skip broadcast to myself.
+		// skip message which broadcast from myself.
 		if(senderIp == rapido_env().m_hostIp)
 		{
 			qDebug() << "message from myself, skip.";
 			continue;
 		}
 
-		QString packet = toUnicode(datagram);
-        qDebug() << "resive:" << packet;
-		IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, senderPort, packet);
-		processRecvMsg(pPacket);
+		QString strPacket = toUnicode(datagram);
+		qDebug() << "resive:" << strPacket;
+		IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, senderPort, strPacket);
+		_processRecvMessage(pPacket);
+
+		// After the packet has been processed, decrease reference count of this packet.
+		// If nobody using this packet, it will be delete automatically.
+		pPacket->delRef();
 
         //check the return value
 //        if(recvPacket == NULL){
@@ -163,10 +167,10 @@ void IpMsgProtocol::readPendingDatagrams()
     }
 }
 
-void IpMsgProtocol::processRecvMsg(const IpMsgRecvPacket* recvPacket)
+void IpMsgProtocol::_processRecvMessage(const IpMsgRecvPacket* recvPacket)
 {
-
-	switch (IPMSG_GET_MODE(recvPacket->getFlags())) {
+	switch (IPMSG_GET_MODE(recvPacket->getFlags()))
+	{
         case IPMSG_BR_ENTRY:
         {
 			rapido::userList.append(recvPacket->getPacketUser());
@@ -269,4 +273,8 @@ void IpMsgProtocol::processRecvMsg(const IpMsgRecvPacket* recvPacket)
 //    }
 }
 
-
+void IpMsgProtocol::AddForSend(IpMsgSendPacket *pPacket)
+{
+	m_SendPacketLocker.lock();
+	m_SendPackets.append(pPacket);
+}

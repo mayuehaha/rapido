@@ -56,3 +56,12 @@ void IpMsgThread::run(void)
 	delete m_pIpMsg;
 	m_pIpMsg = NULL;
 }
+
+void IpMsgThread::AddForSend(IpMsgSendPacket *pPacket)
+{
+	// TODO: lock the list first.
+	//rapido::sendPacketList.append(send_packet);
+	if(NULL == m_pIpMsg)
+		return;
+	m_pIpMsg->AddForSend(pPacket);
+}

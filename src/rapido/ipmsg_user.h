@@ -7,26 +7,32 @@
 class IpMsgUser
 {
 public:
-
     IpMsgUser();
+	IpMsgUser(const QString& strNickName, const QString& strLoginName, QHostAddress ip);
+	virtual ~IpMsgUser();
 
-	void setName(QString name) { ipmsgName = name; }
-	QString getName() const { return ipmsgName; }
 
-	void setLoginName(QString login_name) { loginName = login_name; }
-	QString getLoginName() const { return loginName; }
+	//void setName(QString name) { m_strNickName = name; }
+	//QString getName() const { return m_strNickName; }
+	void NickName(const QString& strNickName){m_strNickName = strNickName;}
+	const QString& NickName(void) const {return m_strNickName;}
 
-	void setGroup(QString group) { groupName = group; }
-	QString getGroup() const { return groupName; }
+	void setLoginName(QString login_name) { m_strLoginName = login_name; }
+	QString getLoginName() const { return m_strLoginName; }
 
-	void setHost(QString host) { hostName = host; }
-	QString getHost() const { return hostName; }
+	//void setGroup(QString group) { groupName = group; }
+	//QString getGroup() const { return groupName; }
+	void GroupName(const QString& strGroupName){m_strGroupName = strGroupName;}
+	const QString& GroupName(void) const {return m_strGroupName;}
 
-	void setIp(QHostAddress ip) { ipAddress = ip; }
-	QString getIp() const { return ipAddress.toString(); }
+	void setHost(QString host) { m_strHostName = host; }
+	QString getHost() const { return m_strHostName; }
 
-	void setMac(QString mac) { macAddress = mac; }
-	QString getMac() const { return macAddress; }
+	void setIp(QHostAddress ip) { m_ip = ip; }
+	QString getIp() const { return m_ip.toString(); }
+
+	//void setMac(QString mac) { macAddress = mac; }
+	//QString getMac() const { return macAddress; }
 
 //	void setDisplayLevel(QString displayLevel) {
 //		m_displayLevel = displayLevel;
@@ -34,24 +40,23 @@ public:
 //	QString displayLevel() const { return m_displayLevel; }
 
 
-    ~IpMsgUser();
-
 private:
+	// name for display
+	QString m_strNickName;
+	// user name when login the system, if not set nick name, use login name for display.
+	QString m_strLoginName;
 
-	// user name
-	QString ipmsgName;
-	// computer login name
-	QString loginName;
 	// group name
-	QString groupName;
-	// computer host name
-	QString hostName;
-	// ip address
-	QHostAddress ipAddress;
-	// computer mac
-	QString macAddress;
+	QString m_strGroupName;
 
-	quint16 listeningPort;
+	// computer host name, or computer name.
+	QString m_strHostName;
+	// ip address
+	QHostAddress m_ip;
+	// computer mac
+	//QString macAddress;
+
+	//quint16 listeningPort;
 	QString displayLevel;
 
 };

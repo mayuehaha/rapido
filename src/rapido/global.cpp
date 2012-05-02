@@ -18,9 +18,9 @@ bool rapido_initialize(void)
 	if(!rapido_env().Initialize())
 		return false;
 
-    rapido::entryMessage = QString("%1%2%3%4").arg(rapido::myself.getName())
+	rapido::entryMessage = QString("%1%2%3%4").arg(rapido::myself.NickName())
             .arg(QChar(R_EXTEND_INFO_SEPERATOR))
-            .arg(rapido::myself.getGroup())
+			.arg(rapido::myself.GroupName())
             .arg(QChar(R_EXTEND_INFO_SEPERATOR));
 
 	rapido::pChatWindowManager = new ChatWindowManager;

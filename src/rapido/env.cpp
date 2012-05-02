@@ -29,8 +29,8 @@ bool Env::Initialize(void)
 	if(!_getNetworkInfo())
 		return false;
 
-	rapido::myself.setName("testname");
-	rapido::myself.setGroup("testgroup");
+	rapido::myself.NickName("testname");
+	rapido::myself.GroupName("testgroup");
 	return true;
 }
 
@@ -127,7 +127,7 @@ bool Env::_getNetworkInfo(void)
 	qDebug() << "Host : " << m_strHostName;
 
 	rapido::myself.setIp(m_hostIp);
-	rapido::myself.setMac(m_strHostMAC);
+	//rapido::myself.setMac(m_strHostMAC);
 	rapido::myself.setHost(m_strHostName);
 	return true;
 }
