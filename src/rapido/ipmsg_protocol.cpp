@@ -1,4 +1,4 @@
-#include "ipmsg_protocol.h"
+﻿#include "ipmsg_protocol.h"
 
 #include <QNetworkInterface>
 #include <QHostInfo>

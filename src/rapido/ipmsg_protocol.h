@@ -1,4 +1,4 @@
-#ifndef IPMSGPROTOCOL_H
+﻿#ifndef IPMSGPROTOCOL_H
 #define IPMSGPROTOCOL_H
 
 #include "ipmsg_db.h"

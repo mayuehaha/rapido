@@ -1,4 +1,4 @@
-#ifndef IPMSG_THREAD_H
+﻿#ifndef IPMSG_THREAD_H
 #define IPMSG_THREAD_H
 
 #include <QThread>

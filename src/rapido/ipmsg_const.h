@@ -1,4 +1,4 @@
-#ifndef IPMSG_CONST_H
+﻿#ifndef IPMSG_CONST_H
 #define IPMSG_CONST_H
 
 /*

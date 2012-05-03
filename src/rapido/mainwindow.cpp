@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "global.h"
 
 #include <QtGui>
@@ -118,7 +118,7 @@ void MainWindow::_onTrayIconEvent(QSystemTrayIcon::ActivationReason reason)
 			//setWindowState(Qt::WindowNoState);
 			break;
 		default:
-			break; 
+			break;
 	}
 }
 

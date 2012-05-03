@@ -1,4 +1,4 @@
-/**
+﻿/**
 @file ipmsg_packet.h
 @brief 对 IpMsg 格式的消息报文的封装类
 */

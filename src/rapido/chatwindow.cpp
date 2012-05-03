@@ -1,4 +1,4 @@
-#include "chatwindow.h"
+﻿#include "chatwindow.h"
 
 #include <QtGui>
 #include "global.h"

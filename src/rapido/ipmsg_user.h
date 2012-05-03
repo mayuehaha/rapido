@@ -1,4 +1,4 @@
-#ifndef IPMSG_USER_H
+﻿#ifndef IPMSG_USER_H
 #define IPMSG_USER_H
 
 #include <QHostAddress>

@@ -1,4 +1,4 @@
-#include "chatwindow_manager.h"
+﻿#include "chatwindow_manager.h"
 #include "ipmsg_packet.h"
 
 ChatWindowManager::ChatWindowManager(QObject *parent) :

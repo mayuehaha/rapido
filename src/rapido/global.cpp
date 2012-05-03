@@ -1,4 +1,4 @@
-#include "global.h"
+﻿#include "global.h"
 #include "ipmsg_const.h"
 #include "ipmsg_thread.h"
 
