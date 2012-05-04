@@ -8,17 +8,23 @@
 
 #include <QHostAddress>
 #include <QMutex>
+#include <QTime>
 
 #include "ipmsg_user.h"
 
 // TODO: message packet should have a refrence count.
 
+/// @brief IpMsg消息包处理的基类
+///
+/// 这是一个纯粹的数据处理的类，不涉及数据的接收与发送，只是管理消息包的数据的解析与合成等操作。
 class IpMsgPacket
 {
 protected:
-	virtual ~IpMsgPacket();	// put this into protected area to make sure you must use "new" operator to create an instance.
+	/// 将析构函数作为保护成员函数，这样强制调用者只能使用new操作符来创建一个实例。
+	virtual ~IpMsgPacket();
 
 public:
+	/// 没有缺省构造函数，所以要创建一个数据包实例，必须给出一些必须的数据。
 	IpMsgPacket(QHostAddress ip, quint16 port);
 
 	void addRef();
@@ -73,9 +79,16 @@ public:
 	//IpMsgSendPacket();
 	IpMsgSendPacket(QHostAddress ip, quint16 port, QString additionalInfo,
 					QString extendedInfo, quint32 flags);
-	void send();
+	//void send();
+	/// 更新发送状态，每次发送后调用
+	void UpdateSendFlag(void);
+	/// 此消息包是否发送失败了（重试多次均无回应）
+	bool IsSendFailed(void);
 private:
     void constructPacket();
+protected:
+	QTime m_SendingTime;	/// 记录上一次发送消息的时间
+	quint32 m_RetryCount;	/// 记录发送的尝试次数（重试三次，每次间隔2秒，如果还失败，说明对方断网了）
 };
 
 class IpMsgRecvPacket : public IpMsgPacket

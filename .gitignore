@@ -7,3 +7,4 @@ src/rapido/release
 *.pdb
 *.pro.user
 *.db
+/doc/html

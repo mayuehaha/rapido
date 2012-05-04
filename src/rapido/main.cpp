@@ -2,7 +2,7 @@
 
 #include "mainwindow.h"
 #include "global.h"
-
+/*
 // 测试一下使用引用计数来管理一个对象的自我释放
 class a
 {
@@ -37,7 +37,7 @@ public:
 	b(){qDebug()<<"b()"<<m_ref;}
 	~b(){qDebug()<<"~b()"<<m_ref;}
 };
-
+*/
 int main(int argc, char* argv[])
 {
 	//b* _b = new b;

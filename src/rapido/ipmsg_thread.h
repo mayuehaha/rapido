@@ -10,18 +10,19 @@ class IpMsgSendPacket;
 
 class IpMsgThread : public QThread
 {
-    Q_OBJECT
-public:
-    friend class IpMsgProtocol;
-    explicit IpMsgThread(QObject *parent = 0);
-    ~IpMsgThread();
+	Q_OBJECT
 
-    virtual void run(void);
+public:
+	//friend class IpMsgProtocol;
+	explicit IpMsgThread(QObject *parent = 0);
+	~IpMsgThread();
+
+	virtual void run(void);
 
 	void setOwnerWindow(MainWindow* pMainWindow);
-    void stop_and_finalize();
+	void stop_and_finalize();
 	// send a packet from this thread.
-	void AddForSend(IpMsgSendPacket* pPacket);
+	void SendPacket(IpMsgSendPacket* pPacket);
 
 signals:
     
@@ -29,7 +30,7 @@ public slots:
     
 private:
 	MainWindow* m_pMainWindow;
-    QMutex r_lock;
+	//QMutex r_lock;
     IpMsgProtocol* m_pIpMsg;
 };
 

@@ -41,6 +41,7 @@ void IpMsgThread::run(void)
 
 	m_pIpMsg = new IpMsgProtocol;
 
+	/// 设置一个计时器，定时发送待发送列表中的消息。
 	connect(&timer, SIGNAL(timeout()), m_pIpMsg, SLOT(processSendMsg()));
 
 	connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
@@ -57,11 +58,11 @@ void IpMsgThread::run(void)
 	m_pIpMsg = NULL;
 }
 
-void IpMsgThread::AddForSend(IpMsgSendPacket *pPacket)
+void IpMsgThread::SendPacket(IpMsgSendPacket *pPacket)
 {
 	// TODO: lock the list first.
 	//rapido::sendPacketList.append(send_packet);
 	if(NULL == m_pIpMsg)
 		return;
-	m_pIpMsg->AddForSend(pPacket);
+	m_pIpMsg->SendPacket(pPacket);
 }

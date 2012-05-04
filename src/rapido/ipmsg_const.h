@@ -29,7 +29,8 @@ Some define.
 #define R_FILE_NAME_BEFORE				"::"
 #define R_FILE_NAME_AFTER				":"
 
-
+#define R_IPMSG_SEND_RETRY				3		/// 发送消息包时的重试次数
+#define R_IPMSG_SEND_INTERVAL			1000	/// 发送消息包时的间隔时间（毫秒，非精确值）
 
 
 /*

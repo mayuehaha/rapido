@@ -41,6 +41,7 @@ IpMsgSendPacket::IpMsgSendPacket(QHostAddress ip, quint16 port, QString addition
 								 QString extendedInfo, quint32 flags)
 	: IpMsgPacket(ip, port)
 {
+	m_RetryCount = 0;
     this->additionalInfo = additionalInfo;
     this->extendedInfo = extendedInfo;
     this->m_flags = flags;
@@ -48,6 +49,10 @@ IpMsgSendPacket::IpMsgSendPacket(QHostAddress ip, quint16 port, QString addition
     this->packetNoString = QString("%1").arg(random);
 
 	constructPacket();
+}
+
+IpMsgSendPacket::~IpMsgSendPacket()
+{
 }
 
 void IpMsgSendPacket::constructPacket()
@@ -65,14 +70,25 @@ void IpMsgSendPacket::constructPacket()
     this->m_packet.append(this->additionalInfo);
 }
 
-void IpMsgSendPacket::send()
+void IpMsgSendPacket::UpdateSendFlag(void)
 {
-    rapido::sendPacketList.append(this);
+	m_RetryCount++;
+	m_SendingTime.restart();
 }
 
-IpMsgSendPacket::~IpMsgSendPacket()
+bool IpMsgSendPacket::IsSendFailed(void)
 {
+	if(m_RetryCount <= R_IPMSG_SEND_RETRY)
+		return false;
+	if(m_SendingTime.elapsed() < R_IPMSG_SEND_INTERVAL)
+		return false;
+	return true;
 }
+
+//void IpMsgSendPacket::send()
+//{
+//    rapido::sendPacketList.append(this);
+//}
 
 // ===================================================
 // IpMsgRecvPacket

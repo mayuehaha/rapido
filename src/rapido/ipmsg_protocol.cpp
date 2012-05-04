@@ -47,10 +47,10 @@ void IpMsgProtocol::start()
     }
 
     // broadcast that I'm online. :)
-	_broadcastOnlineMessage();
+	_BroadcastOnlineMessage();
 }
 
-void IpMsgProtocol::_broadcastOnlineMessage()
+void IpMsgProtocol::_BroadcastOnlineMessage()
 {
     quint32 flags = 0;
 	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
@@ -58,19 +58,41 @@ void IpMsgProtocol::_broadcastOnlineMessage()
     //QHostAddress mytest = QHostAddress::Broadcast;
 	QHostAddress mytest = QHostAddress(rapido_env().m_hostIp.toString());
     IpMsgSendPacket *broadcast = new IpMsgSendPacket(mytest, IPMSG_DEFAULT_PORT, rapido::entryMessage, "", flags);
-    broadcast->send();
+	//broadcast->send();
+	rapido_ipmsg_thread().SendPacket(broadcast);
 }
 
 void IpMsgProtocol::processSendMsg()
 {
-	for (int i = 0; i < rapido::sendPacketList.size(); ++i) {
-        handleMsg(rapido::sendPacketList.at(i));
+	QMutexLocker locker(&m_SendPacketLock);
+
+
+	// 2. 将剩下的消息包依次发送
+
+	//for (int i = 0; i < rapido::sendPacketList.size(); ++i)
+	for (int i = 0; i < m_SendPackets.size(); )
+	{
+		if(m_SendPackets.at(i)->IsSendFailed())
+		{
+			// 将发送失败的消息包干掉
+			// TODO: 同时在对应的聊天窗口中显示对方已离线的提示
+			m_SendPackets.removeAt(i);
+			continue;
+		}
+
+		//handleMsg(rapido::sendPacketList.at(i));
+		_SendPacket(m_SendPackets.at(i));
+		m_SendPackets.at(i)->UpdateSendFlag();
+		++i;
 	}
-	rapido::sendPacketList.clear();
+	//rapido::sendPacketList.clear();
+	// FIXME
+	//m_SendPackets.clear();
 }
 
 //can it be run without trouble with the object not the point
-void IpMsgProtocol::handleMsg(const IpMsgSendPacket* send_packet)
+//void IpMsgProtocol::handleMsg(const IpMsgSendPacket* send_packet)
+void IpMsgProtocol::_SendPacket(const IpMsgSendPacket* send_packet)
 {
     qDebug()<< send_packet->getIp() << ":" <<send_packet->getPort() << ":" <<send_packet->getPacket();
     m_socket.writeDatagram(send_packet->getPacket().toLocal8Bit().data(), send_packet->getPacket().size(),
@@ -153,7 +175,7 @@ void IpMsgProtocol::readPendingDatagrams()
 		QString strPacket = toUnicode(datagram);
 		qDebug() << "resive:" << strPacket;
 		IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, senderPort, strPacket);
-		_processRecvMessage(pPacket);
+		_ProcessRecvMessage(pPacket);
 
 		// After the packet has been processed, decrease reference count of this packet.
 		// If nobody using this packet, it will be delete automatically.
@@ -167,68 +189,76 @@ void IpMsgProtocol::readPendingDatagrams()
     }
 }
 
-void IpMsgProtocol::_processRecvMessage(const IpMsgRecvPacket* recvPacket)
+void IpMsgProtocol::_ProcessRecvMessage(const IpMsgRecvPacket* recvPacket)
 {
 	switch (IPMSG_GET_MODE(recvPacket->getFlags()))
 	{
-        case IPMSG_BR_ENTRY:
-        {
-			rapido::userList.append(recvPacket->getPacketUser());
-			IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
-															   rapido::entryMessage, "", IPMSG_ANSENTRY);
-			anserPacket->send();
-			break;
-        }
-		case IPMSG_BR_EXIT:
-			break;
+	case IPMSG_BR_ENTRY:	// 有人广播说自己上线了
+	{
+		rapido::userList.append(recvPacket->getPacketUser());
+		IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
+														   rapido::entryMessage, "", IPMSG_ANSENTRY);
+		//anserPacket->send();
+		rapido_ipmsg_thread().SendPacket(anserPacket);
+		break;
+	}
+	case IPMSG_BR_EXIT:		// 有人广播说自己要下线了
+		break;
 
-		case IPMSG_ANSENTRY:
-			rapido::userList.append(recvPacket->getPacketUser());
-			break;
+	case IPMSG_ANSENTRY:	// 自己广播说上线了，别人回应说他已经在线了
+		rapido::userList.append(recvPacket->getPacketUser());
+		break;
 
-        case IPMSG_BR_ABSENCE:
-            // XXX TODO: support it
-            break;
+	case IPMSG_BR_ABSENCE:	// 有人广播说自己暂时离开了
+		// XXX TODO: support it
+		break;
 
-        case IPMSG_SENDMSG:
-        {
-			if (IPMSG_GET_OPT(recvPacket->getFlags()) & IPMSG_SENDCHECKOPT) {
-				IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),recvPacket->getPacketNoString(), "",  IPMSG_RECVMSG);
-                checkOptPacket->send();
-            }
+	case IPMSG_SENDMSG:	// 收到一个对方发过来的消息
+	{
+		if (IPMSG_GET_OPT(recvPacket->getFlags()) & IPMSG_SENDCHECKOPT)
+		{
+			IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),recvPacket->getPacketNoString(), "",  IPMSG_RECVMSG);
+			//checkOptPacket->send();
+			rapido_ipmsg_thread().SendPacket(checkOptPacket);
+		}
 
-			IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
-												   recvPacket->getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
-            rebackTest->send();
-//            // If sender is not in our user list, add it.
-//            if (!Global::userManager->contains(msg->ip())) {
-//                emit newUserMsg(msg);
-//            }
-            break;
-        }
-        case IPMSG_READMSG:
-            qDebug() << "some guys READMSGr";
-            //processRecvReadMsg(msg);
-            break;
+		IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
+														  recvPacket->getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
+		//rebackTest->send();
+		rapido_ipmsg_thread().SendPacket(rebackTest);
 
-        case IPMSG_ANSREADMSG:
-        case IPMSG_RECVMSG:
-        case IPMSG_DELMSG:
-            // do nothing
-            // XXX TODO: do something?????????
-            break;
+		//            // If sender is not in our user list, add it.
+		//            if (!Global::userManager->contains(msg->ip())) {
+		//                emit newUserMsg(msg);
+		//            }
+		break;
+	}
+	case IPMSG_READMSG:		// 对方说如果我们查看了消息，给他一个响应。
+		qDebug() << "some guys READMSG";
+		//processRecvReadMsg(msg);
+		break;
 
-        case IPMSG_RELEASEFILES:
-            //processRecvReleaseFilesMsg(msg);
-            break;
+	case IPMSG_ANSREADMSG:	// 我们要求对方查看了消息后给个响应，这就是对方的响应。
+		break;
+	case IPMSG_RECVMSG:		// 对方证实收到我们发送的消息
+		// TODO: 对方收到我们的消息，会将该消息的ID发回来，收到此消息后根据ID将待发送列表(m_SendPackets)中的对应的消息移除，不用再尝试发送。
+		break;
+	case IPMSG_DELMSG:
+		// do nothing
+		// XXX TODO: do something?????????
+		break;
 
-        default:
-        {
-          //  qDebug() << "sender: " << recvPacket.getIp() << ":" << recvPacket.getPort();
-          //  qDebug() << "content: " << recvPacket.getPacket();
-            break;
-        }
-    }
+	case IPMSG_RELEASEFILES:
+		//processRecvReleaseFilesMsg(msg);
+		break;
+
+	default:
+	{
+		//  qDebug() << "sender: " << recvPacket.getIp() << ":" << recvPacket.getPort();
+		//  qDebug() << "content: " << recvPacket.getPacket();
+		break;
+	}
+	}
 //    case IPMSG_SENDMSG:
 //    {
 //        qDebug() << "content: " << data;
@@ -273,8 +303,10 @@ void IpMsgProtocol::_processRecvMessage(const IpMsgRecvPacket* recvPacket)
 //    }
 }
 
-void IpMsgProtocol::AddForSend(IpMsgSendPacket *pPacket)
+void IpMsgProtocol::SendPacket(IpMsgSendPacket *pPacket)
 {
-	m_SendPacketLocker.lock();
+	/// locker析构时会解锁。
+	QMutexLocker locker(&m_SendPacketLock);
+
 	m_SendPackets.append(pPacket);
 }

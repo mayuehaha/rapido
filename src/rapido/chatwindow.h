@@ -1,4 +1,9 @@
-﻿#ifndef CHATWINDOW_H
+﻿/**
+@file chatwindow.h
+@brief 聊天窗口类
+*/
+
+#ifndef CHATWINDOW_H
 #define CHATWINDOW_H
 
 //#include <QMainWindow>
