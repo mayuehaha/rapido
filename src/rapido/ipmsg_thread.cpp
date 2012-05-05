@@ -42,12 +42,13 @@ void IpMsgThread::run(void)
 	m_pIpMsg = new IpMsgProtocol;
 
 	/// 设置一个计时器，定时发送待发送列表中的消息。
-	connect(&timer, SIGNAL(timeout()), m_pIpMsg, SLOT(processSendMsg()));
+	connect(&timer, SIGNAL(timeout()), m_pIpMsg, SLOT(_ProcessSendMessage()));
 
-	connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
-	connect(m_pIpMsg, SIGNAL(onUserOnline(QString,QString)), m_pMainWindow, SLOT(onUserOnline(QString,QString)));
-	connect(m_pIpMsg, SIGNAL(onUserOffline(QString)), m_pMainWindow, SLOT(onUserOffline(QString)));
+	connect(m_pIpMsg, SIGNAL(_onReceiveMessage(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(_onReceiveMessage(IpMsgRecvPacket*)));
+	connect(m_pIpMsg, SIGNAL(_onUserOnline(QString,QString)), m_pMainWindow, SLOT(onUserOnline(QString,QString)));
+	connect(m_pIpMsg, SIGNAL(_onUserOffline(QString)), m_pMainWindow, SLOT(onUserOffline(QString)));
 
+	// TODO: start()内部会绑定UDP端口，这有可能失败，所以start()应该有返回值，需要处理失败的情况。
 	m_pIpMsg->start();
 
 	exec();
@@ -60,8 +61,6 @@ void IpMsgThread::run(void)
 
 void IpMsgThread::SendPacket(IpMsgSendPacket *pPacket)
 {
-	// TODO: lock the list first.
-	//rapido::sendPacketList.append(send_packet);
 	if(NULL == m_pIpMsg)
 		return;
 	m_pIpMsg->SendPacket(pPacket);

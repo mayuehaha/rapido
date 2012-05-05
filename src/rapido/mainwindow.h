@@ -40,7 +40,7 @@ public slots:
 private slots:
 	void _onTrayIconEvent(QSystemTrayIcon::ActivationReason reason);
 	void _onAddJSObject();
-	//void _onQuit();
+	void _onQuit();
     
 protected:
 	QSystemTrayIcon* m_pTrayIcon;

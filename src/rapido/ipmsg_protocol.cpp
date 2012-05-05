@@ -20,13 +20,13 @@ format:
 IpMsgProtocol::IpMsgProtocol(QObject *parent)
     :QObject(parent)
 {
+	// 产生一个随机数，作为第一个发送的消息包的序号，在全局范围内，此序号是递增的。
 	qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
-	// Set init package number as random.
 	m_packetNo = qrand() % 1024;
 
 	// !! DO NOT use Qt::BlockingQueuedConnection, otherwise you'll got an exception.
 	//connect(&m_socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()), Qt::BlockingQueuedConnection);
-	connect(&m_socket, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+	connect(&m_socket, SIGNAL(readyRead()), this, SLOT(_ReadPendingDatagrams()));
 }
 
 void IpMsgProtocol::start()
@@ -46,33 +46,31 @@ void IpMsgProtocol::start()
         return;
     }
 
-    // broadcast that I'm online. :)
+	// 通知大家我们上线了. :)
 	_BroadcastOnlineMessage();
 }
 
 void IpMsgProtocol::_BroadcastOnlineMessage()
 {
-    quint32 flags = 0;
-	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
+	//quint32 flags = IPMSG_BR_ENTRY;// | IPMSG_FILEATTACHOPT;
 
     //QHostAddress mytest = QHostAddress::Broadcast;
-	QHostAddress mytest = QHostAddress(rapido_env().m_hostIp.toString());
-    IpMsgSendPacket *broadcast = new IpMsgSendPacket(mytest, IPMSG_DEFAULT_PORT, rapido::entryMessage, "", flags);
-	//broadcast->send();
-	rapido_ipmsg_thread().SendPacket(broadcast);
+	//QHostAddress mytest = QHostAddress(rapido_env().m_hostIp.toString());
+	//IpMsgSendPacket *packet = new IpMsgSendPacket(QHostAddress::Broadcast, IPMSG_DEFAULT_PORT, rapido::entryMessage, "", flags);
+	IpMsgSendPacket *packet = new IpMsgSendPacket(QHostAddress::Broadcast, IPMSG_BR_ENTRY);
+	SendPacket(packet);
 }
 
-void IpMsgProtocol::processSendMsg()
+void IpMsgProtocol::_ProcessSendMessage()
 {
 	QMutexLocker locker(&m_SendPacketLock);
 
-
-	// 2. 将剩下的消息包依次发送
-
-	//for (int i = 0; i < rapido::sendPacketList.size(); ++i)
+	IpMsgSendPacket* pPacket = NULL;
 	for (int i = 0; i < m_SendPackets.size(); )
 	{
-		if(m_SendPackets.at(i)->IsSendFailed())
+		pPacket = m_SendPackets.at(i);
+
+		if(pPacket->IsSendFailed())
 		{
 			// 将发送失败的消息包干掉
 			// TODO: 同时在对应的聊天窗口中显示对方已离线的提示
@@ -81,22 +79,30 @@ void IpMsgProtocol::processSendMsg()
 		}
 
 		//handleMsg(rapido::sendPacketList.at(i));
-		_SendPacket(m_SendPackets.at(i));
-		m_SendPackets.at(i)->UpdateSendFlag();
+		_SendPacket(pPacket);
+
+		// 如果是广播消息，则无需确定对方是否收到，直接从列表中干掉。
+		switch(pPacket->getCommand())
+		{
+		case IPMSG_BR_ENTRY:
+		case IPMSG_BR_EXIT:
+		case IPMSG_BR_ABSENCE:
+			m_SendPackets.removeAt(i);
+			continue;
+		}
+
+		pPacket->UpdateSendFlag();
 		++i;
 	}
-	//rapido::sendPacketList.clear();
-	// FIXME
-	//m_SendPackets.clear();
 }
 
 //can it be run without trouble with the object not the point
 //void IpMsgProtocol::handleMsg(const IpMsgSendPacket* send_packet)
 void IpMsgProtocol::_SendPacket(const IpMsgSendPacket* send_packet)
 {
-    qDebug()<< send_packet->getIp() << ":" <<send_packet->getPort() << ":" <<send_packet->getPacket();
+	qDebug() << "Send Out Message:" << send_packet->getIp() << ":" <<send_packet->getPacket();
     m_socket.writeDatagram(send_packet->getPacket().toLocal8Bit().data(), send_packet->getPacket().size(),
-                           send_packet->getIpAddress(), send_packet->getPort());
+						   send_packet->getIpAddress(), IPMSG_DEFAULT_PORT);
 //    // Delete msg
 //    if (msg->state() == MsgBase::SendAckOk) {
 //        Global::msgThread->removeSendMsgNotLock(msg->packetNoString());
@@ -153,7 +159,7 @@ void IpMsgProtocol::_SendPacket(const IpMsgSendPacket* send_packet)
 //    }
 }
 
-void IpMsgProtocol::readPendingDatagrams()
+void IpMsgProtocol::_ReadPendingDatagrams()
 {
 	while (m_socket.hasPendingDatagrams())
     {
@@ -172,20 +178,15 @@ void IpMsgProtocol::readPendingDatagrams()
 			continue;
 		}
 
-		QString strPacket = toUnicode(datagram);
-		qDebug() << "resive:" << strPacket;
-		IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, senderPort, strPacket);
+		//QString strPacket = toUnicode(datagram);
+		//qDebug() << "received:" << strPacket;
+		IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, datagram);
+
 		_ProcessRecvMessage(pPacket);
 
 		// After the packet has been processed, decrease reference count of this packet.
 		// If nobody using this packet, it will be delete automatically.
-		pPacket->delRef();
-
-        //check the return value
-//        if(recvPacket == NULL){
-//            qDebug() << "erro formate, Packet:" <<  data;
-//        }
-
+		pPacket->Release();
     }
 }
 
@@ -195,9 +196,8 @@ void IpMsgProtocol::_ProcessRecvMessage(const IpMsgRecvPacket* recvPacket)
 	{
 	case IPMSG_BR_ENTRY:	// 有人广播说自己上线了
 	{
-		rapido::userList.append(recvPacket->getPacketUser());
-		IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
-														   rapido::entryMessage, "", IPMSG_ANSENTRY);
+		//rapido::userList.append(recvPacket->getPacketUser());
+		IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), rapido::entryMessage, "", IPMSG_ANSENTRY);
 		//anserPacket->send();
 		rapido_ipmsg_thread().SendPacket(anserPacket);
 		break;
@@ -206,7 +206,7 @@ void IpMsgProtocol::_ProcessRecvMessage(const IpMsgRecvPacket* recvPacket)
 		break;
 
 	case IPMSG_ANSENTRY:	// 自己广播说上线了，别人回应说他已经在线了
-		rapido::userList.append(recvPacket->getPacketUser());
+		//rapido::userList.append(recvPacket->getPacketUser());
 		break;
 
 	case IPMSG_BR_ABSENCE:	// 有人广播说自己暂时离开了
@@ -217,12 +217,12 @@ void IpMsgProtocol::_ProcessRecvMessage(const IpMsgRecvPacket* recvPacket)
 	{
 		if (IPMSG_GET_OPT(recvPacket->getFlags()) & IPMSG_SENDCHECKOPT)
 		{
-			IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),recvPacket->getPacketNoString(), "",  IPMSG_RECVMSG);
+			IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPacketNoString(), "",  IPMSG_RECVMSG);
 			//checkOptPacket->send();
 			rapido_ipmsg_thread().SendPacket(checkOptPacket);
 		}
 
-		IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
+		IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket->getIpAddress(),
 														  recvPacket->getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
 		//rebackTest->send();
 		rapido_ipmsg_thread().SendPacket(rebackTest);

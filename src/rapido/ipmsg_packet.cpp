@@ -6,8 +6,8 @@
 // IpMsgPacket
 // ===================================================
 
-IpMsgPacket::IpMsgPacket(QHostAddress ip, quint16 port)
-	: m_ref(1), m_ip(ip), m_port(port)
+IpMsgPacket::IpMsgPacket(QHostAddress ip)
+	: m_ref(1), m_ip(ip)
 {
 	qDebug() << "IpMsgPacket::IpMsgPacket()" << m_ref;
 }
@@ -16,16 +16,20 @@ IpMsgPacket::~IpMsgPacket()
 	qDebug() << "IpMsgPacket::~IpMsgPacket()";
 }
 
-void IpMsgPacket::addRef()
+qint32 IpMsgPacket::AddRef()
 {
 	++ m_ref;
+	return m_ref;
 }
-void IpMsgPacket::delRef()
+qint32 IpMsgPacket::Release()
 {
-	if(--m_ref == 0)
+	m_ref--;
+	qint32 _tmp = m_ref;
+	if(_tmp == 0)
 	{
 		delete this;
 	}
+	return _tmp;
 }
 
 // ===================================================
@@ -37,9 +41,9 @@ void IpMsgPacket::delRef()
 //{
 //}
 
-IpMsgSendPacket::IpMsgSendPacket(QHostAddress ip, quint16 port, QString additionalInfo,
+IpMsgSendPacket::IpMsgSendPacket(QHostAddress ip, QString additionalInfo,
 								 QString extendedInfo, quint32 flags)
-	: IpMsgPacket(ip, port)
+	: IpMsgPacket(ip)
 {
 	m_RetryCount = 0;
     this->additionalInfo = additionalInfo;
@@ -48,14 +52,21 @@ IpMsgSendPacket::IpMsgSendPacket(QHostAddress ip, quint16 port, QString addition
 	qint64 random = qrand() % 1024;
     this->packetNoString = QString("%1").arg(random);
 
-	constructPacket();
+	_BuildPacket();
+}
+
+IpMsgSendPacket::IpMsgSendPacket(QHostAddress ip, quint32 command, quint32 options)
+	: IpMsgPacket(ip)
+{
+	m_command = command;
+	m_options = options;
 }
 
 IpMsgSendPacket::~IpMsgSendPacket()
 {
 }
 
-void IpMsgSendPacket::constructPacket()
+void IpMsgSendPacket::_BuildPacket()
 {
     this->m_packet.append(QString("%1%2").arg(IPMSG_VERSION).arg(R_COMMAND_SEPERATOR));
 
@@ -94,11 +105,11 @@ bool IpMsgSendPacket::IsSendFailed(void)
 // IpMsgRecvPacket
 // ===================================================
 
-//IpMsgRecvPacket::IpMsgRecvPacket(){}
-
-IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress ip, quint16 port, QString packet)
-	: IpMsgPacket(ip, port)
+IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress ip, const QByteArray& datagram)
+	: IpMsgPacket(ip)
 {
+	QString packet = toUnicode(datagram);
+
 	QStringList list = packet.split(R_COMMAND_SEPERATOR);
 
 	// sanity check
@@ -115,11 +126,11 @@ IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress ip, quint16 port, QString packet)
     this->packetNoString = list.at(R_IPMSG_PACKET_NO_POS);
     this->m_flags = list.at(R_IPMSG_FLAGS_POS).toUInt();
 
-	this->packetUser.NickName(this->additionalInfo);
-	this->packetUser.GroupName(this->extendedInfo);
-    this->packetUser.setHost(list.at(R_IPMSG_HOST_POS));
-	this->packetUser.setIp(ip);
-    this->packetUser.setLoginName(list.at(R_IPMSG_LOG_NAME_POS));
+//	this->packetUser.NickName(this->additionalInfo);
+//	this->packetUser.GroupName(this->extendedInfo);
+//    this->packetUser.setHost(list.at(R_IPMSG_HOST_POS));
+//	this->packetUser.setIp(ip);
+//    this->packetUser.setLoginName(list.at(R_IPMSG_LOG_NAME_POS));
 	//this->packetUser.setMac("aa:aa:aa:aa:aa:aa");
 }
 
