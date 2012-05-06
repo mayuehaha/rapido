@@ -13,11 +13,11 @@ class IpMsgProtocol : public QObject
     Q_OBJECT
 public:
     explicit IpMsgProtocol(QObject *parent = 0);
-    
+
     void start();
 
 protected:
-    QUdpSocket m_socket;
+	QUdpSocket m_socket;
 	IpMsgDB m_db;
     qint32 m_packetNo;
 	void broadcastLogin();

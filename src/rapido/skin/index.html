@@ -23,13 +23,18 @@ function connectSlots()
 // 当某个用户上线（或者因为我们广播上线信息而得到某个用户在线），则此函数被调用
 function onUserOnline(username, ip)
 {
-	alert("online:" + username + ", " + ip);
+	userDiv = $('<div>')
+	userDiv.attr('id', 'newDiv')
+	userDiv.css('border', '1px solid gray')
+	userDiv.appendTo($('#userlist'));
+	userDiv.append(username + "_" + ip);
+	//alert("online:" + username + ", " + ip);
 }
 
 // 当某个用户离线，此函数被调用
 function onUserOffline(ip)
 {
-	alert("offline:" + ip);
+	//alert("offline:" + ip);
 }
 
 function onBodyLoad()
@@ -38,7 +43,7 @@ function onBodyLoad()
 	disableSelection(document.body); //Disable text selection on entire body
 	//disableSelection(document.getElementById("mydiv")) //Disable text selection on element with id="mydiv"
 
-	// 连接信号槽
+	// 连接信号�?
 	connectSlots();
 	// 启动IpMsg功能，广播上线消息，得到当前在线用户列表
 	rCore.startIpMsg();
@@ -65,13 +70,19 @@ function disableSelection(target)
 	}
 	//target.style.cursor = "default";
 }
+
+function addOnLineUser()
+{
+	
+
+}
 //Sample usages
 //disableSelection(document.body) //Disable text selection on entire body
 //disableSelection(document.getElementById("mydiv")) //Disable text selection on element with id="mydiv"
 </script>
 <body onload="onBodyLoad();">
 
-<div class="header_box">
+<div class="header_box" onclick= "addOnLineUser()">
 	<div class="myself_box">
 		<div class="avatar" style="position:relative;left:5px;top:5px;">
 			<div class="avatar_box" style="position:absolute; left: 2px; top: 2px">
@@ -82,8 +93,8 @@ function disableSelection(target)
 			</div>
 		</div>
 		<div class="info">
-			<p>隐身 <span class="myname">路人甲</span></p>
-			<p class="mydesc">我们的目标：没有蛀牙...</p>
+			<p>隐身 <span class="myname">路人�?/span></p>
+			<p class="mydesc">我们的目标：没有蛀�?..</p>
 			<p><img src="images/icon_add.png" />11 <img src="images/icon_add.png" />2 <img src="images/icon_add.png" /></p>
 		</div>
 	</div>
@@ -92,11 +103,9 @@ function disableSelection(target)
 	</div>
 </div>
 
-<!-- 这里应该是三个水平摆放的 tab 页，分别是 当前用户/群组/最近联系人，群组内部又分 群 和 临时讨论组 两种 -->
-
-<img src="images/app_loading.gif" /><br/>
+<!-- 这里应该是三个水平摆放的 tab 页，分别�?当前用户/群组/最近联系人，群组内部又�?�?�?临时讨论�?两种 -->
 <div id="userlist">
-	<div>user1</div>
+	<div>user3</div>
 </div>
 
 </body>

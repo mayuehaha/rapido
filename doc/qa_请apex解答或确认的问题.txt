@@ -1,1 +1,0 @@
-1、想将env中的ip、mac等属性去掉，通过在global：：myself对象中取？

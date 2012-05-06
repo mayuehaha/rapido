@@ -67,7 +67,7 @@ IpMsgRecvPacket::IpMsgRecvPacket(QHostAddress senderIp, quint16 senderPort, QStr
     this->extendedInfo = packet.section(QChar(R_EXTEND_INFO_SEPERATOR), 1, 1);
 
 	//remember to add the situation of haven't the field
-    this->additionalInfo = toUnicode(list.at(R_IPMSG_ADDITION_INFO_POS).toAscii());
+	this->additionalInfo = list.at(R_IPMSG_ADDITION_INFO_POS);
 
     this->packetNoString = list.at(R_IPMSG_PACKET_NO_POS);
     this->flags = list.at(R_IPMSG_FLAGS_POS).toUInt();

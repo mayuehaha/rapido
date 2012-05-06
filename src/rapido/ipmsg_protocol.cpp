@@ -54,9 +54,9 @@ void IpMsgProtocol::broadcastLogin()
     quint32 flags = 0;
 	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
 
-    //QHostAddress mytest = QHostAddress::Broadcast;
-    QHostAddress mytest = QHostAddress("192.168.4.29");
-    IpMsgSendPacket *broadcast = new IpMsgSendPacket(mytest, IPMSG_DEFAULT_PORT, rapido::entryMessage, "", flags);
+	//QHostAddress mytest = QHostAddress::Broadcast;
+	//QHostAddress mytest = QHostAddress("192.168.4.29");
+	IpMsgSendPacket *broadcast = new IpMsgSendPacket(QHostAddress::Broadcast, IPMSG_DEFAULT_PORT, rapido::entryMessage, "", flags);
     broadcast->send();
 }
 
@@ -161,25 +161,33 @@ void IpMsgProtocol::readPendingDatagrams()
     }
 }
 
+
+
 void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
 {
 
     switch (IPMSG_GET_MODE(recvPacket.getFlags())) {
         case IPMSG_BR_ENTRY:
         {
-            rapido::userList.append(recvPacket.getPacketUser());
-            IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),
-                                                           rapido::entryMessage, "", IPMSG_ANSENTRY);
-            anserPacket->send();
+			rapido::userList.append(recvPacket.getPacketUser());
+			IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),
+									rapido::entryMessage, "", IPMSG_ANSENTRY);
+			anserPacket->send();
+			emit onUserOnline(recvPacket.getPacketUser().getName(), recvPacket.getIp());
 			break;
         }
 		case IPMSG_BR_EXIT:
 			break;
 
 		case IPMSG_ANSENTRY:
+		{
+
+			//QString name = toUnicode(.toAscii();
+			qDebug() << recvPacket.getPacketUser().getName();
+			emit onUserOnline(recvPacket.getPacketUser().getName(), recvPacket.getIp());
             rapido::userList.append(recvPacket.getPacketUser());
 			break;
-
+		}
         case IPMSG_BR_ABSENCE:
             // XXX TODO: support it
             break;
@@ -194,6 +202,7 @@ void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
             IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),
                                                    recvPacket.getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
             rebackTest->send();
+
 //            // If sender is not in our user list, add it.
 //            if (!Global::userManager->contains(msg->ip())) {
 //                emit newUserMsg(msg);

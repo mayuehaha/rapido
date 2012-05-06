@@ -99,6 +99,7 @@ void MainWindow::onUserOnline(const QString& strUserName, const QString& strIp)
 	// let UserManager class handle this information: add the user into a list.
 
 	// finally, update the UI.
+	qDebug()<<"mayue123";
 	emit jsOnUserOnline(strUserName, strIp);
 }
 
