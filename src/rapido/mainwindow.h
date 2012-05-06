@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QtGui>
@@ -32,7 +32,7 @@ public slots:
 	// login.html
 	void login(const QString& strUserId, const QString& strPasswd);
 	// index.html
-	void startIpMsg(void);
+	void startIpMsgThread(void);
 
 	void onUserOnline(const QString& strUserName, const QString& strIp);
 	void onUserOffline(const QString& strIp);

@@ -1,4 +1,3 @@
-
 RapidoMSG
   Yet another IpMsg based on Qt and use QtWebKit for UI.
 
@@ -29,6 +28,6 @@ RapidoMSG
 =============================================================
 folder tree
 
-  \           project root.
+  \          project root.
   |-- doc    documents.
   |-- src    source projects.

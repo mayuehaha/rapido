@@ -1,4 +1,4 @@
-#ifndef CHATWINDOW_MANAGER_H
+﻿#ifndef CHATWINDOW_MANAGER_H
 #define CHATWINDOW_MANAGER_H
 
 #include "chatwindow.h"

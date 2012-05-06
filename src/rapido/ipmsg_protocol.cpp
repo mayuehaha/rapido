@@ -1,4 +1,4 @@
-#include "ipmsg_protocol.h"
+﻿#include "ipmsg_protocol.h"
 
 #include <QNetworkInterface>
 #include <QHostInfo>
@@ -7,13 +7,14 @@
 #include <QDebug>
 
 #include "global.h"
+#include "ipmsg_const.h"
 #include "ipmsg_packet.h"
 
 /*
 command:
   1:123:apex:APEXPC:1:ApexLiu
 format:
-  unknown : packet-number : login-name : computer-name (or host-name) : command : user-name
+  packet-version : packet-number : login-name : computer-name (or host-name) : command : user-name
 */
 
 IpMsgProtocol::IpMsgProtocol(QObject *parent)
@@ -46,17 +47,18 @@ void IpMsgProtocol::start()
     }
 
     // broadcast that I'm online. :)
-    broadcastLogin();
+	_broadcastOnlineMessage();
 }
 
-void IpMsgProtocol::broadcastLogin()
+void IpMsgProtocol::_broadcastOnlineMessage()
 {
     quint32 flags = 0;
 	flags |= IPMSG_BR_ENTRY | IPMSG_FILEATTACHOPT;
 
 	//QHostAddress mytest = QHostAddress::Broadcast;
 	//QHostAddress mytest = QHostAddress("192.168.4.29");
-	IpMsgSendPacket *broadcast = new IpMsgSendPacket(QHostAddress::Broadcast, IPMSG_DEFAULT_PORT, rapido::entryMessage, "", flags);
+	IpMsgSendPacket *broadcast = new IpMsgSendPacket(QHostAddress::Broadcast,
+						IPMSG_DEFAULT_PORT, rapido::entryMessage, "", flags);
     broadcast->send();
 }
 
@@ -69,7 +71,7 @@ void IpMsgProtocol::processSendMsg()
 }
 
 //can it be run without trouble with the object not the point
-void IpMsgProtocol::handleMsg(IpMsgSendPacket *send_packet)
+void IpMsgProtocol::handleMsg(const IpMsgSendPacket* send_packet)
 {
     qDebug()<< send_packet->getIp() << ":" <<send_packet->getPort() << ":" <<send_packet->getPacket();
     m_socket.writeDatagram(send_packet->getPacket().toLocal8Bit().data(), send_packet->getPacket().size(),
@@ -142,17 +144,21 @@ void IpMsgProtocol::readPendingDatagrams()
 		if(-1 == m_socket.readDatagram(datagram.data(), datagram.size(), &senderIp, &senderPort))
             continue;
 
-		// skip broadcast to myself.
+		// skip message which broadcast from myself.
 		if(senderIp == rapido_env().m_hostIp)
 		{
 			qDebug() << "message from myself, skip.";
 			continue;
 		}
 
-		QString packet = toUnicode(datagram);
-        qDebug() << "resive:" << packet;
-        IpMsgRecvPacket recvPacket = IpMsgRecvPacket(senderIp, senderPort, packet);
-        processRecvMsg(recvPacket);
+		QString strPacket = toUnicode(datagram);
+		qDebug() << "resive:" << strPacket;
+		IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, senderPort, strPacket);
+		_processRecvMessage(pPacket);
+
+		// After the packet has been processed, decrease reference count of this packet.
+		// If nobody using this packet, it will be delete automatically.
+		pPacket->delRef();
 
         //check the return value
 //        if(recvPacket == NULL){
@@ -161,19 +167,18 @@ void IpMsgProtocol::readPendingDatagrams()
     }
 }
 
-
-
-void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
+//void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
+void IpMsgProtocol::_processRecvMessage(const IpMsgRecvPacket* recvPacket)
 {
-
-    switch (IPMSG_GET_MODE(recvPacket.getFlags())) {
+	switch (IPMSG_GET_MODE(recvPacket->getFlags()))
+	{
         case IPMSG_BR_ENTRY:
         {
-			rapido::userList.append(recvPacket.getPacketUser());
-			IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),
+			rapido::userList.append(recvPacket->getPacketUser());
+			IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
 									rapido::entryMessage, "", IPMSG_ANSENTRY);
 			anserPacket->send();
-			emit onUserOnline(recvPacket.getPacketUser().getName(), recvPacket.getIp());
+			emit onUserOnline(recvPacket->getPacketUser().getLoginName(), recvPacket->getIp());
 			break;
         }
 		case IPMSG_BR_EXIT:
@@ -183,9 +188,9 @@ void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
 		{
 
 			//QString name = toUnicode(.toAscii();
-			qDebug() << recvPacket.getPacketUser().getName();
-			emit onUserOnline(recvPacket.getPacketUser().getName(), recvPacket.getIp());
-            rapido::userList.append(recvPacket.getPacketUser());
+			qDebug() << recvPacket->getPacketUser().getName();
+			emit onUserOnline(recvPacket->getPacketUser().getName(), recvPacket->getIp());
+			rapido::userList.append(recvPacket->getPacketUser());
 			break;
 		}
         case IPMSG_BR_ABSENCE:
@@ -194,13 +199,13 @@ void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
 
         case IPMSG_SENDMSG:
         {
-            if (IPMSG_GET_OPT(recvPacket.getFlags()) & IPMSG_SENDCHECKOPT) {
-                IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),recvPacket.getPacketNoString(), "",  IPMSG_RECVMSG);
+			if (IPMSG_GET_OPT(recvPacket->getFlags()) & IPMSG_SENDCHECKOPT) {
+				IpMsgSendPacket *checkOptPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),recvPacket->getPacketNoString(), "",  IPMSG_RECVMSG);
                 checkOptPacket->send();
             }
 
-            IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket.getIpAddress(), recvPacket.getPort(),
-                                                   recvPacket.getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
+			IpMsgSendPacket *rebackTest = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
+												   recvPacket->getPacketNoString(), "", IPMSG_SENDMSG | IPMSG_SENDCHECKOPT);
             rebackTest->send();
 
 //            // If sender is not in our user list, add it.
@@ -276,4 +281,8 @@ void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
 //    }
 }
 
-
+void IpMsgProtocol::AddForSend(IpMsgSendPacket *pPacket)
+{
+	m_SendPacketLocker.lock();
+	m_SendPackets.append(pPacket);
+}

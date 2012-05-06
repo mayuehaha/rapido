@@ -1,10 +1,11 @@
-#include "ipmsg_thread.h"
+﻿#include "ipmsg_thread.h"
+#include "global.h"
+#include "ipmsg_const.h"
+
 #include "ipmsg_protocol.h"
 #include "mainwindow.h"
 #include "chatwindow_manager.h"
 
-
-#include "global.h"
 
 IpMsgThread::IpMsgThread(QObject *parent) :
 	QThread(parent)
@@ -54,4 +55,13 @@ void IpMsgThread::run(void)
 	// so we must do this inside the thread. Otherwise we will got an exception.
 	delete m_pIpMsg;
 	m_pIpMsg = NULL;
+}
+
+void IpMsgThread::AddForSend(IpMsgSendPacket *pPacket)
+{
+	// TODO: lock the list first.
+	//rapido::sendPacketList.append(send_packet);
+	if(NULL == m_pIpMsg)
+		return;
+	m_pIpMsg->AddForSend(pPacket);
 }

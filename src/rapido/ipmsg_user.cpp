@@ -1,4 +1,4 @@
-#include <QStringList>
+﻿#include <QStringList>
 
 #include "ipmsg_user.h"
 #include "ipmsg_const.h"

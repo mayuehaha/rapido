@@ -1,12 +1,14 @@
-#ifndef IPMSGPROTOCOL_H
+﻿#ifndef IPMSGPROTOCOL_H
 #define IPMSGPROTOCOL_H
 
-#include "ipmsg_const.h"
 #include "ipmsg_db.h"
-#include "ipmsg_packet.h"
 
 #include <QObject>
 #include <QUdpSocket>
+#include <QMutex>
+
+class IpMsgSendPacket;
+class IpMsgRecvPacket;
 
 class IpMsgProtocol : public QObject
 {
@@ -16,15 +18,30 @@ public:
 
     void start();
 
+	void AddForSend(IpMsgSendPacket* pPacket);
+
 protected:
+
 	QUdpSocket m_socket;
 	IpMsgDB m_db;
     qint32 m_packetNo;
 	void broadcastLogin();
-    void handleMsg(IpMsgSendPacket *send_packet);
+	//void handleMsg(IpMsgSendPacket *send_packet);
     void processRecvMsg(IpMsgRecvPacket recvPacket);
+
+	// broadcast a message that I'm online now.
+	void _broadcastOnlineMessage();
+	// broadcast message (the target ip in send_packet will be ignored.)
+	void _broadcastMessage(const IpMsgSendPacket* send_packet);
+	// send message
+	void _sendMessage(const IpMsgSendPacket* send_packet);
+
+	void handleMsg(const IpMsgSendPacket* send_packet);
+
+	void _processRecvMessage(const IpMsgRecvPacket* recvPacket);
+
 signals:
-    void newMsg(IpMsgRecvPacket *packet);
+	void newMsg(IpMsgRecvPacket* packet);
 	void onUserOnline(const QString& strUserName, const QString& strIp);
 	void onUserOffline(const QString& strIp);
 
@@ -33,6 +50,11 @@ private slots:
 
 public slots:
 	void processSendMsg();	// this slot will be connect with a timer.
+
+protected:
+	QMutex m_SendPacketLocker;
+	QList<IpMsgSendPacket*> m_SendPackets;
 };
+
 
 #endif // IPMSGPROTOCOL_H

@@ -1,4 +1,4 @@
-#ifndef IPMSG_THREAD_H
+﻿#ifndef IPMSG_THREAD_H
 #define IPMSG_THREAD_H
 
 #include <QThread>
@@ -6,6 +6,7 @@
 
 class IpMsgProtocol;
 class MainWindow;
+class IpMsgSendPacket;
 
 class IpMsgThread : public QThread
 {
@@ -19,6 +20,8 @@ public:
 
 	void setOwnerWindow(MainWindow* pMainWindow);
     void stop_and_finalize();
+	// send a packet from this thread.
+	void AddForSend(IpMsgSendPacket* pPacket);
 
 signals:
     

@@ -1,4 +1,4 @@
-#ifndef CHATWINDOW_H
+﻿#ifndef CHATWINDOW_H
 #define CHATWINDOW_H
 
 //#include <QMainWindow>

@@ -1,4 +1,4 @@
-#ifndef IPMSG_DB_H
+﻿#ifndef IPMSG_DB_H
 #define IPMSG_DB_H
 
 #include <QObject>
