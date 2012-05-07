@@ -24,7 +24,6 @@ public:
 	QString m_strHostMAC;
 	QString m_strHostName;
 	QString m_strLoginName;
-
 	QString m_strHtmlBasePath;
 };
 

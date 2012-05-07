@@ -18,11 +18,22 @@ function connectSlots()
 		connected = true;
 		//imageAnalyzer.finishedAnalysis.connect(this, finished);
 		//imageAnalyzer.updateProgress.connect(this, updateProg);
-		//rCore.onNewUserOnline.connect(this, onNewUserOnline);
+		rCore.onNewUserOnline.connect(this, onNewUserOnline);
 		rCore.onLoginFailed.connect(this, onLoginFailed);
 	}
 }
 //! <!--  [ connect slots ] -->
+
+// 当某个用户上线（或者因为我们广播上线信息而得到某个用户在线），则此函数被调用
+function onUserOnline(username, ip)
+{
+	userDiv = $('<div>')
+	userDiv.attr('id', 'newDiv')
+	userDiv.css('border', '1px solid gray')
+	userDiv.appendTo($('#userlist'));
+	userDiv.append(username + "_" + ip);
+	//alert("online:" + username + ", " + ip);
+}
 
 function onLoginFailed(reason)
 {

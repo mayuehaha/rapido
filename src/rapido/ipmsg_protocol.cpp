@@ -65,15 +65,15 @@ void IpMsgProtocol::_broadcastOnlineMessage()
 void IpMsgProtocol::processSendMsg()
 {
 	for (int i = 0; i < rapido::sendPacketList.size(); ++i) {
-        handleMsg(rapido::sendPacketList.at(i));
+
+		_handleMsg(rapido::sendPacketList.at(i));
 	}
 	rapido::sendPacketList.clear();
 }
 
 //can it be run without trouble with the object not the point
-void IpMsgProtocol::handleMsg(const IpMsgSendPacket* send_packet)
+void IpMsgProtocol::_handleMsg(const IpMsgSendPacket* send_packet)
 {
-    qDebug()<< send_packet->getIp() << ":" <<send_packet->getPort() << ":" <<send_packet->getPacket();
     m_socket.writeDatagram(send_packet->getPacket().toLocal8Bit().data(), send_packet->getPacket().size(),
                            send_packet->getIpAddress(), send_packet->getPort());
 //    // Delete msg
@@ -167,7 +167,6 @@ void IpMsgProtocol::readPendingDatagrams()
     }
 }
 
-//void IpMsgProtocol::processRecvMsg(IpMsgRecvPacket recvPacket)
 void IpMsgProtocol::_processRecvMessage(const IpMsgRecvPacket* recvPacket)
 {
 	switch (IPMSG_GET_MODE(recvPacket->getFlags()))
@@ -178,7 +177,7 @@ void IpMsgProtocol::_processRecvMessage(const IpMsgRecvPacket* recvPacket)
 			IpMsgSendPacket *anserPacket = new IpMsgSendPacket(recvPacket->getIpAddress(), recvPacket->getPort(),
 									rapido::entryMessage, "", IPMSG_ANSENTRY);
 			anserPacket->send();
-			emit onUserOnline(recvPacket->getPacketUser().getLoginName(), recvPacket->getIp());
+			//emit onUserOnline(recvPacket->getPacketUser().getLoginName(), recvPacket->getIp());
 			break;
         }
 		case IPMSG_BR_EXIT:
@@ -186,11 +185,13 @@ void IpMsgProtocol::_processRecvMessage(const IpMsgRecvPacket* recvPacket)
 
 		case IPMSG_ANSENTRY:
 		{
-
-			//QString name = toUnicode(.toAscii();
-			qDebug() << recvPacket->getPacketUser().getName();
-			emit onUserOnline(recvPacket->getPacketUser().getName(), recvPacket->getIp());
+			//emit onUserOnline(recvPacket->getPacketUser().getName(), recvPacket->getIp());
 			rapido::userList.append(recvPacket->getPacketUser());
+			//qDebug() << recvPacket->getPacketUser().getName()<< ":" << recvPacket->getIp();
+			qDebug() << recvPacket->getIp();
+			QString strUserNam1("hehehe");
+			QString strUserNam2("11111");
+			emit onUserOnline(strUserNam1 ,strUserNam2);
 			break;
 		}
         case IPMSG_BR_ABSENCE:
@@ -237,48 +238,6 @@ void IpMsgProtocol::_processRecvMessage(const IpMsgRecvPacket* recvPacket)
             break;
         }
     }
-//    case IPMSG_SENDMSG:
-//    {
-//        qDebug() << "content: " << data;
-//        //QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
-//        QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":"+QByteArray::number(qint32(IPMSG_RECVMSG))+":";
-//        //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-//        m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
-
-//        IpMsgRecvPacket* pPacket = new IpMsgRecvPacket(senderIp, senderPort, datagramSend);
-//        emit newMsg(pPacket);
-
-//        break;
-//    }
-//    case IPMSG_RECVMSG:
-//        qDebug() << "Ok, he/she/it got my message." << strSenderIp;
-//        break;
-//    case IPMSG_READMSG:
-//    {
-//        qDebug() << "send to" << strSenderIp << "I have read it.";
-//        //QByteArray datagramSend = "1:" + QByteArray::number(2) + ":apex:"+ hostName.toAscii() +":33:";
-//        QByteArray datagramSend = "1:" + QByteArray::number(++m_packetNo) + ":apex:" + rapido_env().m_strHostName.toAscii() + ":"+QByteArray::number(qint32(IPMSG_ANSREADMSG))+":";
-//        //QByteArray datagram = "1_lbt2_0#128#000000000000#0#0#0:1333107614:apex:APEXPC:6291459:\261\312\274";
-//        m_socket.writeDatagram(datagramSend.data(), datagramSend.size(), senderIp, senderPort);
-//        break;
-//    }
-//    case IPMSG_FEIQ_REMOTE_START_TYPING:	// FeiQ special.
-//        qDebug() << strSenderIp << "is typing to you...";
-//        break;
-//    case IPMSG_FEIQ_REMOTE_KEEP_TYPING:
-//        qDebug() << strSenderIp << "is still typing to you...";
-//        break;
-//    default:
-//    {
-//        qDebug() << "sender: " << strSenderIp << ":" << senderPort;
-//        qDebug() << "content: " << data;
-//        QTextCodec *codec = QTextCodec::codecForName("GBK");
-//        QByteArray tmp(cmdList.at(5).toAscii());
-//        qDebug() << "==> " << codec->toUnicode(tmp);
-//        qDebug("Unknown command: 0x%02X", cmd);
-//        break;
-//    }
-//    }
 }
 
 void IpMsgProtocol::AddForSend(IpMsgSendPacket *pPacket)

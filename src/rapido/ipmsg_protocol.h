@@ -26,8 +26,6 @@ protected:
 	IpMsgDB m_db;
     qint32 m_packetNo;
 	void broadcastLogin();
-	//void handleMsg(IpMsgSendPacket *send_packet);
-    void processRecvMsg(IpMsgRecvPacket recvPacket);
 
 	// broadcast a message that I'm online now.
 	void _broadcastOnlineMessage();
@@ -36,7 +34,7 @@ protected:
 	// send message
 	void _sendMessage(const IpMsgSendPacket* send_packet);
 
-	void handleMsg(const IpMsgSendPacket* send_packet);
+	void _handleMsg(const IpMsgSendPacket* send_packet);
 
 	void _processRecvMessage(const IpMsgRecvPacket* recvPacket);
 
@@ -45,10 +43,8 @@ signals:
 	void onUserOnline(const QString& strUserName, const QString& strIp);
 	void onUserOffline(const QString& strIp);
 
-private slots:
-    void readPendingDatagrams();
-
 public slots:
+    void readPendingDatagrams();
 	void processSendMsg();	// this slot will be connect with a timer.
 
 protected:

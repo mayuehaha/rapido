@@ -33,7 +33,6 @@ public slots:
 	void login(const QString& strUserId, const QString& strPasswd);
 	// index.html
 	void startIpMsgThread(void);
-
 	void onUserOnline(const QString& strUserName, const QString& strIp);
 	void onUserOffline(const QString& strIp);
 

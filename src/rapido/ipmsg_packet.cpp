@@ -9,11 +9,11 @@
 IpMsgPacket::IpMsgPacket(QHostAddress ip, quint16 port)
 	: m_ref(1), m_ip(ip), m_port(port)
 {
-	qDebug() << "IpMsgPacket::IpMsgPacket()" << m_ref;
+	//qDebug() << "IpMsgPacket::IpMsgPacket()" << m_ref;
 }
 IpMsgPacket::~IpMsgPacket()
 {
-	qDebug() << "IpMsgPacket::~IpMsgPacket()";
+	//qDebug() << "IpMsgPacket::~IpMsgPacket()";
 }
 
 void IpMsgPacket::addRef()

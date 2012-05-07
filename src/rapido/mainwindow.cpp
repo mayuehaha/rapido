@@ -84,13 +84,12 @@ void MainWindow::login(const QString& strUserId, const QString& strPasswd)
 	//setUrl(startURL);
 	page()->mainFrame()->load(startURL);
 
-
+	rapido_ipmsg_thread().start();
 	//emit onLoginFailed("Oh, failed. [core]");
 }
 
 void MainWindow::startIpMsgThread(void)
 {
-    //qDebug() << "startIpMsg().";
 	rapido_ipmsg_thread().setOwnerWindow(this);
 	rapido_ipmsg_thread().start();
 }
@@ -99,7 +98,10 @@ void MainWindow::onUserOnline(const QString& strUserName, const QString& strIp)
 	// let UserManager class handle this information: add the user into a list.
 
 	// finally, update the UI.
-	qDebug()<<"mayue123";
+	qDebug() << "mayue123" ;
+	qDebug() << "mayue123" ;
+	qDebug() << "mayue123" ;
+	qDebug() << "mayue123" ;
 	emit jsOnUserOnline(strUserName, strIp);
 }
 
