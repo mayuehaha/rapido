@@ -54,7 +54,8 @@ void MainWindow::InitTrayIcon()
 
 	m_pTrayMenu = new QMenu(this);
 	m_pQuitAction = new QAction(QObject::tr("E&xit"), this);
-	connect(m_pQuitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+	// TODO: 不应该直接退出应用程序，而是先做一些清理操作，例如广播一个下线通知。
+	connect(m_pQuitAction, SIGNAL(triggered()), this, SLOT(_onQuit()));
 	m_pTrayMenu->addAction(m_pQuitAction);
 
 	m_pTrayIcon->setContextMenu(m_pTrayMenu);
@@ -81,15 +82,22 @@ void MainWindow::login(const QString& strUserId, const QString& strPasswd)
 	QString strUrl = rapido_env().m_strHtmlBasePath;
 	strUrl += "index.html";
 	QUrl startURL = QUrl(strUrl);
-	//setUrl(startURL);
 	page()->mainFrame()->load(startURL);
 
+<<<<<<< HEAD
 	rapido_ipmsg_thread().start();
+=======
+	startIpMsgThread();
+>>>>>>> 229d281586472bab07b0d529e012c0eafdf7c10d
 	//emit onLoginFailed("Oh, failed. [core]");
 }
 
 void MainWindow::startIpMsgThread(void)
 {
+<<<<<<< HEAD
+=======
+	//qDebug() << "startIpMsg().";
+>>>>>>> 229d281586472bab07b0d529e012c0eafdf7c10d
 	rapido_ipmsg_thread().setOwnerWindow(this);
 	rapido_ipmsg_thread().start();
 }
@@ -123,6 +131,11 @@ void MainWindow::_onTrayIconEvent(QSystemTrayIcon::ActivationReason reason)
 		default:
 			break;
 	}
+}
+
+void MainWindow::_onQuit()
+{
+	qApp->quit();
 }
 
 void MainWindow::_onAddJSObject()
