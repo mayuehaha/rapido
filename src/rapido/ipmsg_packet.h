@@ -28,11 +28,8 @@ protected:
 	virtual ~IpMsgPacket();
 
 public:
-<<<<<<< HEAD
-=======
 	/// 没有缺省构造函数，所以要创建一个数据包实例，必须给出一些必须的数据。
 	IpMsgPacket(QHostAddress ip);
->>>>>>> 229d281586472bab07b0d529e012c0eafdf7c10d
 
 	virtual qint32 AddRef();
 	virtual qint32 Release();
@@ -91,14 +88,10 @@ protected:
 	~IpMsgSendPacket();
 
 public:
-<<<<<<< HEAD
     IpMsgSendPacket();
 	IpMsgSendPacket(QHostAddress address, quint16 port, QString additionalInfo,
 		QString extendedInfo, quint32 flags);
-    void send();
 
-=======
-	//IpMsgSendPacket();
 	IpMsgSendPacket(QHostAddress ip, QString additionalInfo, QString extendedInfo, quint32 flags);
 
 	/// 构造一个简单的纯命令消息包，例如广播上线、下线等。
@@ -109,7 +102,6 @@ public:
 	void UpdateSendFlag(void);
 	/// 此消息包是否发送失败了（重试多次均无回应）
 	bool IsSendFailed(void);
->>>>>>> 229d281586472bab07b0d529e012c0eafdf7c10d
 private:
 	void _BuildPacket();
 protected:

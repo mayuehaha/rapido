@@ -44,15 +44,9 @@ void IpMsgThread::run(void)
 	/// 设置一个计时器，定时发送待发送列表中的消息。
 	connect(&timer, SIGNAL(timeout()), m_pIpMsg, SLOT(_ProcessSendMessage()));
 
-<<<<<<< HEAD
-	connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
-	connect(m_pIpMsg, SIGNAL(onUserOnline(QString, QString)), m_pMainWindow, SLOT(onUserOnline(QString, QString)));
-	connect(m_pIpMsg, SIGNAL(onUserOffline(QString)), m_pMainWindow, SLOT(onUserOffline(QString)));
-=======
-	connect(m_pIpMsg, SIGNAL(_onReceiveMessage(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(_onReceiveMessage(IpMsgRecvPacket*)));
-	connect(m_pIpMsg, SIGNAL(_onUserOnline(QString,QString)), m_pMainWindow, SLOT(onUserOnline(QString,QString)));
-	connect(m_pIpMsg, SIGNAL(_onUserOffline(QString)), m_pMainWindow, SLOT(onUserOffline(QString)));
->>>>>>> 229d281586472bab07b0d529e012c0eafdf7c10d
+	//connect(m_pIpMsg, SIGNAL(newMsg(IpMsgRecvPacket*)), rapido::pChatWindowManager, SLOT(newMsg(IpMsgRecvPacket*)));
+//	connect(m_pIpMsg, SIGNAL(onUserOnline(QString, QString)), m_pMainWindow, SLOT(onUserOnline(QString, QString)));
+//	connect(m_pIpMsg, SIGNAL(onUserOffline(QString)), m_pMainWindow, SLOT(onUserOffline(QString)));
 
 	// TODO: start()内部会绑定UDP端口，这有可能失败，所以start()应该有返回值，需要处理失败的情况。
 	m_pIpMsg->start();

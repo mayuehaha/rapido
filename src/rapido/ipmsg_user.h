@@ -43,19 +43,6 @@ public:
 
 private:
 
-    //user name
-	QString ipmsgName;
-    //computer login name
-	QString loginName;
-    //group name
-	QString groupName;
-    //computer host name
-	QString hostName;
-    //ip address
-	QHostAddress ipAddress;
-    //compyter mac
-	QString macAddress;
-
     quint8 status;
     ChatWindow* pChatWin;
 

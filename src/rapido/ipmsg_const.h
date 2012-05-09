@@ -29,17 +29,15 @@ Some define.
 #define R_FILE_NAME_BEFORE				"::"
 #define R_FILE_NAME_AFTER				":"
 
-<<<<<<< HEAD
 //user status
 #define R_USERSTATUS_ONLINE             0
 #define R_USERSTATUS_OFFLINE            1
 #define R_USERSTATUS_BUSY               2
 #define R_USERSTATUS_LEAVE              3
 #define R_USERSTATUS_CREAZING           4
-=======
+
 #define R_IPMSG_SEND_RETRY				3		/// 发送消息包时的重试次数
 #define R_IPMSG_SEND_INTERVAL			1000	/// 发送消息包时的间隔时间（毫秒，非精确值）
->>>>>>> 229d281586472bab07b0d529e012c0eafdf7c10d
 
 
 /*

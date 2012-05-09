@@ -84,20 +84,14 @@ void MainWindow::login(const QString& strUserId, const QString& strPasswd)
 	QUrl startURL = QUrl(strUrl);
 	page()->mainFrame()->load(startURL);
 
-<<<<<<< HEAD
 	rapido_ipmsg_thread().start();
-=======
 	startIpMsgThread();
->>>>>>> 229d281586472bab07b0d529e012c0eafdf7c10d
 	//emit onLoginFailed("Oh, failed. [core]");
 }
 
 void MainWindow::startIpMsgThread(void)
 {
-<<<<<<< HEAD
-=======
 	//qDebug() << "startIpMsg().";
->>>>>>> 229d281586472bab07b0d529e012c0eafdf7c10d
 	rapido_ipmsg_thread().setOwnerWindow(this);
 	rapido_ipmsg_thread().start();
 }
