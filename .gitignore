@@ -1,0 +1,11 @@
+src/rapido/Makefile
+src/rapido/debug
+src/rapido/release
+src/rapido/rapido
+*.Debug
+*.Release
+*.pdb
+*.pro.user
+*.db
+*.o
+/doc/html
